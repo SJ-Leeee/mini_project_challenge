@@ -1,5 +1,3 @@
-from app import db
-
 # from app.models.user_model import get_user_by_id, insert_user
 
 import bcrypt
