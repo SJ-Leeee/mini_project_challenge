@@ -1,17 +1,22 @@
-from datetime import datetime
-from flask import jsonify
-from app.models.challenge_model import get_challenges_model, post_challenges_model
-from enum import Enum
+from app.models.challenge_model import (
+    post_challenges_model,
+    get_public_challenge_model,
+    get_private_challenge_model,
+)
+from app.utils.TopicTypeEnum import TopicType
 
 
-class TopicType(Enum):
-    HEALTH = 0
-    STUDY = 1
-    LIFE = 2
-
-
-def get_challenges_service(sort_type):
-    return get_challenges_model(sort_type)
+def get_challenges_service(sort_type, is_public, user_id=None):
+    # private API 요청했는데 user_id 없으면 오류
+    if is_public == False and user_id == None:
+        raise ValueError("you must be login")
+    # 퍼블릭 결과요청
+    if is_public == True:
+        result = get_public_challenge_model(sort_type)
+    # 프라이빗 결과요청
+    else:
+        result = get_private_challenge_model(sort_type, user_id)
+    return result
 
 
 def create_challenge_service(challenge_data, user_id):
