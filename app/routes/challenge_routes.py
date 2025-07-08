@@ -1,7 +1,8 @@
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify
 from app.services.challenge_service import (
     get_challenges_service,
     create_challenge_service,
+    like_challenge_service,
 )
 from app.utils.ChallengeSortTypeEnum import ChallengeSortType
 from bcrypt import _bcrypt
@@ -65,6 +66,24 @@ def post_challenge():
     try:
         # 서비스 호출
         result = create_challenge_service(challenge_data, user_id)
+        return jsonify(result), 201
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@challenge_bp.route("/like", methods=["PATCH"])
+def like_challenge():
+    challenge_id = request.args.get("challenge_id")  # 기본값 지정 = Optional
+    # user_id = get_current_user()
+    user_id = 1
+    # 이부분에서 user_id없으면 Error
+    if not user_id or challenge_id:
+        return jsonify({"error": "Authentication or ChallengeID required"}), 401
+    try:
+        # 서비스 호출
+        result = like_challenge_service(user_id, challenge_id)
         return jsonify(result), 201
     except ValueError as e:
         return jsonify({"error": str(e)}), 400

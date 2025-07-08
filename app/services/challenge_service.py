@@ -2,6 +2,8 @@ from app.models.challenge_model import (
     post_challenges_model,
     get_public_challenge_model,
     get_private_challenge_model,
+    get_user_by_id,
+    get_challenge_by_id,
 )
 from app.utils.TopicTypeEnum import TopicType
 
@@ -60,3 +62,13 @@ def validate_challenge_data(post_challenge_data):
 
     except Exception as e:
         raise ValueError("Invalid data format")
+
+
+def like_challenge_service(user_id, challenge_id):
+    user = get_user_by_id(user_id)
+    challenge = get_challenge_by_id(challenge_id)
+
+    if not user or not challenge:
+        raise ValueError("user or challenge is not exist")
+
+    # result = like_challenge(user)

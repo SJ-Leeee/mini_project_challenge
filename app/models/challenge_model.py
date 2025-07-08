@@ -1,15 +1,6 @@
-from flask import current_app, jsonify
-from bson import ObjectId
-from enum import Enum
+from flask import current_app
 from datetime import datetime, timedelta
-
-# from app.utils.ChallengeSortTypeEnum import ChallengeSortType
-
-
-class ChallengeSortType(Enum):
-    LIKE = 0
-    RECENT = 1
-    COMMENT = 2
+from app.utils.ChallengeSortTypeEnum import ChallengeSortType
 
 
 def get_public_challenge_model(sort_type):
@@ -102,3 +93,20 @@ def post_challenges_model(challenge_data, user_id):
     except Exception as e:
         # 데이터베이스 오류 또는 기타 예상치 못한 오류
         raise ValueError(f"{str(e)}")
+
+
+def get_user_by_id(user_id):
+    db = current_app.config["DB"]
+    user_collection = db["users"]
+
+    user = user_collection.find_one({"_id": user_id})
+    return user
+
+
+def get_challenge_by_id(challenge_id):
+    db = current_app.config["DB"]
+    challenge_collection = db["challenges"]
+
+    challnege = challenge_collection.find_one({"_id": challenge_id})
+
+    return challnege
