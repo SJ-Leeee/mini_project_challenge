@@ -1,5 +1,3 @@
-# from app.models.user_model import get_user_by_id, insert_user
-
 import bcrypt
 from app.models.user_model import insert_user, is_email_exist
 

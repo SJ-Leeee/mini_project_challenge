@@ -4,14 +4,12 @@ from flask import current_app
 
 def insert_user(user_data):
     db = current_app.config["DB"]
-
     result = db["users"].insert_one(user_data)
     return str(result.inserted_id)
 
 
 def get_user_by_id(user_id):
     db = current_app.config["DB"]
-
     return db["users"].find_one({"_id": ObjectId(user_id)})
 
 
