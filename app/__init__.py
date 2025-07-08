@@ -6,6 +6,7 @@ from pymongo import MongoClient
 from app.config.default import Config
 
 from app.routes.user_routes import user_bp
+from app.routes.mainpage_routes import main_bp
 
 db = None
 
@@ -24,5 +25,8 @@ def create_app():
 
     # user.router에 있는 주소들 앞에 users 고정 역할
     app.register_blueprint(user_bp, url_prefix="/users")
+
+    app.register_blueprint(main_bp)
+
 
     return app

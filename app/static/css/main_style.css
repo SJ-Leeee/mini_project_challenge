@@ -1,0 +1,12 @@
+.modal-overlay {
+    display: none; /* JavaScript로 'flex'로 변경하여 보이게 함 */
+    position: fixed; /* 뷰포트에 고정 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 반투명 검정 배경 */
+    z-index: 1000; /* 다른 요소 위에 표시 */
+    justify-content: center; /* 내부 콘텐츠 수평 가운데 정렬 */
+    align-items: center;   /* 내부 콘텐츠 수직 가운데 정렬 */
+}
