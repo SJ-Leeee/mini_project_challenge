@@ -96,17 +96,25 @@ def post_challenges_model(challenge_data, user_id):
 
 
 def get_user_by_id(user_id):
-    db = current_app.config["DB"]
-    user_collection = db["users"]
+    try:
+        db = current_app.config["DB"]
+        user_collection = db["users"]
 
-    user = user_collection.find_one({"_id": user_id})
-    return user
+        user = user_collection.find_one({"_id": user_id})
+        return user
+    except Exception as e:
+        # 데이터베이스 오류 또는 기타 예상치 못한 오류
+        raise ValueError(f"{str(e)}")
 
 
 def get_challenge_by_id(challenge_id):
-    db = current_app.config["DB"]
-    challenge_collection = db["challenges"]
+    try:
+        db = current_app.config["DB"]
+        challenge_collection = db["challenges"]
 
-    challnege = challenge_collection.find_one({"_id": challenge_id})
+        challnege = challenge_collection.find_one({"_id": challenge_id})
 
-    return challnege
+        return challnege
+    except Exception as e:
+        # 데이터베이스 오류 또는 기타 예상치 못한 오류
+        raise ValueError(f"{str(e)}")

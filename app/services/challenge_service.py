@@ -71,4 +71,4 @@ def like_challenge_service(user_id, challenge_id):
     if not user or not challenge:
         raise ValueError("user or challenge is not exist")
 
-    # result = like_challenge(user)
+    # result = like_challenge_model(user)
