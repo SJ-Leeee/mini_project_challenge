@@ -1,17 +1,17 @@
-from flask import Blueprint, request, jsonify
-
-# from app import db
+from flask import Blueprint, request, jsonify, current_app
 
 user_bp = Blueprint("user", __name__)
 
 
 @user_bp.route("/", methods=["GET"])
 def list_users():
+    db = current_app.config["DB"]
+    print(db)
+    db["users"].insert_one({"name": "test"})
     return "hi"
 
 
 # def list_users():
-#     users = db["users"].find()
 #     result = [{"id": str(u["_id"]), "name": u["name"]} for u in users]
 #     return jsonify(result)
 
