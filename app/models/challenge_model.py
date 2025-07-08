@@ -1,6 +1,7 @@
 from flask import current_app
 from datetime import datetime, timedelta
 from app.utils.ChallengeSortTypeEnum import ChallengeSortType
+from bson import ObjectId
 
 
 def get_public_challenge_model(sort_type):
@@ -100,7 +101,7 @@ def get_user_by_id(user_id):
         db = current_app.config["DB"]
         user_collection = db["users"]
 
-        user = user_collection.find_one({"_id": user_id})
+        user = user_collection.find_one({"_id": ObjectId(user_id)})
         return user
     except Exception as e:
         # 데이터베이스 오류 또는 기타 예상치 못한 오류
@@ -112,7 +113,7 @@ def get_challenge_by_id(challenge_id):
         db = current_app.config["DB"]
         challenge_collection = db["challenges"]
 
-        challnege = challenge_collection.find_one({"_id": challenge_id})
+        challnege = challenge_collection.find_one({"_id": ObjectId(challenge_id)})
 
         return challnege
     except Exception as e:
@@ -124,12 +125,28 @@ def like_challenge_model(user, challenge):
     try:
         db = current_app.config["DB"]
         likes_collection = db["likes"]
+        challenge_collection = db["challenges"]
+        query = {"user_id": user["_id"], "challenge_id": challenge["_id"]}
 
-        # likes = likes_collection.find_one({"user_id":})
+        likes = likes_collection.find_one(query)
+
+        if likes:
+            likes_collection.delete_one(query)
+            # 좋아요 취소 처리 완료
+            challenge_collection.update_one(
+                {"_id": challenge["_id"]}, {"$inc": {"like_count": -1}}
+            )
+            return {"message": "좋아요가 -1 되었습니다."}
+
+        else:
+            # 좋아요 등록 로직 (없으면 추가)
+            likes_collection.insert_one(query)
+            challenge_collection.update_one(
+                {"_id": challenge["_id"]}, {"$inc": {"like_count": 1}}
+            )
+            return {"message": "좋아요가 +1 되었습니다."}
 
         # challnege = challenge_collection.find_one({"_id": challenge_id})
-
-        return "h1"
     except Exception as e:
         # 데이터베이스 오류 또는 기타 예상치 못한 오류
         raise ValueError(f"{str(e)}")

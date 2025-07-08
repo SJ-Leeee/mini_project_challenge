@@ -76,10 +76,10 @@ def post_challenge():
 def like_challenge():
     challenge_id = request.args.get("challenge_id")  # 기본값 지정 = Optional
     # user_id = get_current_user()
-    user_id = 1
+    user_id = "686cd2b4fce5f626c62cad5a"
     # 이부분에서 user_id없으면 Error
-    if not user_id or challenge_id:
-        return jsonify({"error": "Authentication or ChallengeID required"}), 401
+    if not user_id or not challenge_id:
+        return jsonify({"error": "Authentication or C22hallengeID required"}), 401
     try:
         # 서비스 호출
         result = like_challenge_service(user_id, challenge_id)
