@@ -25,6 +25,12 @@ def list_users():
 
 @user_bp.route("/sign-up", method=["POST"])
 def sign_up():
+    """
+    클라이언트로부터 전달받은 회원가입 요청을 처리합니다.
+
+    Returns: 
+        JSON 응답: 회원가입 성공/실패 여부와 메시지
+    """
     data = request.form
     result = sign_up_user(data)
     return jsonify(result)
