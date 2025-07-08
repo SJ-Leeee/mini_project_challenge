@@ -3,8 +3,9 @@
 from flask import Flask
 from pymongo import MongoClient
 
-# from app.config.default import Config
-# from app.routes.user_routes import user_bp
+from app.config.default import Config
+
+from app.routes.user_routes import user_bp
 
 db = None
 
@@ -12,11 +13,11 @@ db = None
 def create_app():
     global db
     app = Flask(__name__)
-    # app.config.from_object(Config)
+    app.config.from_object(Config)
 
-    client = MongoClient(app.config["MONGO_URI"])
-    db = client.get_database()
+    # client = MongoClient(app.config["MONGO_DATABASE"])
+    # db = client.get_database()
 
-    # app.register_blueprint(user_bp)
+    app.register_blueprint(user_bp, url_prefix="/users")
 
     return app
