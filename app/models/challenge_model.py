@@ -118,3 +118,18 @@ def get_challenge_by_id(challenge_id):
     except Exception as e:
         # 데이터베이스 오류 또는 기타 예상치 못한 오류
         raise ValueError(f"{str(e)}")
+
+
+def like_challenge_model(user, challenge):
+    try:
+        db = current_app.config["DB"]
+        likes_collection = db["likes"]
+
+        # likes = likes_collection.find_one({"user_id":})
+
+        # challnege = challenge_collection.find_one({"_id": challenge_id})
+
+        return "h1"
+    except Exception as e:
+        # 데이터베이스 오류 또는 기타 예상치 못한 오류
+        raise ValueError(f"{str(e)}")

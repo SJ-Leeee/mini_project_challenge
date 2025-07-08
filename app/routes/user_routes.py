@@ -23,12 +23,13 @@ def list_users():
 #     db["users"].insert_one({"name": data.get("name")})
 #     return jsonify({"success": True}), 201
 
-@user_bp.route("/sign-up", method=["POST"])
+
+@user_bp.route("/sign-up", methods=["POST"])
 def sign_up():
     """
     클라이언트로부터 전달받은 회원가입 요청을 처리합니다.
 
-    Returns: 
+    Returns:
         JSON 응답: 회원가입 성공/실패 여부와 메시지
     """
     data = request.form

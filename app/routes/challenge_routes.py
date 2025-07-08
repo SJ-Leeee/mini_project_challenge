@@ -5,7 +5,6 @@ from app.services.challenge_service import (
     like_challenge_service,
 )
 from app.utils.ChallengeSortTypeEnum import ChallengeSortType
-from bcrypt import _bcrypt
 
 challenge_bp = Blueprint("challenge", __name__)
 
