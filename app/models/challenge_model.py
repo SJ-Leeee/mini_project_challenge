@@ -10,15 +10,17 @@ def get_public_challenge_model(sort_type):
         challenge_collection = db["challenges"]
 
         # challenges = list(challenge_collection.find())
-
+        query = {"is_public": True}
         sort_type = ChallengeSortType(sort_type)  # ✅ Enum으로 변환
 
         if sort_type == ChallengeSortType.LIKE:
-            challenges = list(challenge_collection.find().sort("like_count", -1))
+            challenges = list(challenge_collection.find(query).sort("like_count", -1))
         elif sort_type == ChallengeSortType.RECENT:
-            challenges = list(challenge_collection.find().sort("created_at", -1))
+            challenges = list(challenge_collection.find(query).sort("created_at", -1))
         elif sort_type == ChallengeSortType.COMMENT:
-            challenges = list(challenge_collection.find().sort("comment_count", -1))
+            challenges = list(
+                challenge_collection.find(query).sort("comment_count", -1)
+            )
 
         for c in challenges:
             c["_id"] = str(c["_id"])
