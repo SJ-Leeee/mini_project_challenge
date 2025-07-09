@@ -6,7 +6,7 @@ from app.models.challenge_model import (
     get_challenge_by_id,
     like_challenge_model,
 )
-from app.utils.TopicTypeEnum import TopicType
+from app.utils.enum.TopicTypeEnum import TopicType
 
 
 def get_challenges_service(sort_type, is_public, user_id=None):

@@ -4,7 +4,7 @@ from app.services.challenge_service import (
     create_challenge_service,
     like_challenge_service,
 )
-from app.utils.ChallengeSortTypeEnum import ChallengeSortType
+from app.utils.enum.ChallengeSortTypeEnum import ChallengeSortType
 
 challenge_bp = Blueprint("challenge", __name__)
 
@@ -20,7 +20,17 @@ def get_public_challenges():
         ChallengeSortType(int(sort))
         # 서비스 호출
         data = get_challenges_service(int(sort), is_public)
-        return data
+        return (
+            jsonify(
+                {
+                    "success": True,
+                    "data": data,
+                    "message": "데이터 조회에 성공하였습니다.",
+                }
+            ),
+            200,
+        )
+
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
 
@@ -32,7 +42,7 @@ def get_private_challenges():
     sort = request.args.get("sort", "1")  # 기본값 지정 = Optional
     is_public = False
     # user_id = get_current_user()
-    user_id = 1
+    user_id = "686cd2b4fce5f626c62cad5a"
 
     # 이부분에서 user_id없으면 Error
     if not user_id:
@@ -43,7 +53,7 @@ def get_private_challenges():
         ChallengeSortType(int(sort))
         # 서비스 호출
         data = get_challenges_service(int(sort), is_public, user_id)
-        return jsonify(data), 200
+        return jsonify({"data": data}), 200
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
 
@@ -54,18 +64,23 @@ def get_private_challenges():
 def post_challenge():
     # 기본적인 요청 형식 검증
     challenge_data = request.get_json()
-    if not challenge_data:
-        return jsonify({"error": "No data provided"}), 400
-
     # user_id = get_current_user()
-    user_id = 1
+    user_id = "686cd2b4fce5f626c62cad5a"
     # 이부분에서 user_id없으면 Error
     if not user_id:
         return jsonify({"error": "Authentication required"}), 401
     try:
         # 서비스 호출
         result = create_challenge_service(challenge_data, user_id)
-        return jsonify(result), 201
+        return jsonify(
+            {
+                "success": True,
+                "data": {
+                    "challenge_id": str(result.inserted_id),
+                },
+                "message": "챌린지 등록이 되었습니다.",
+            }
+        )
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     except Exception as e:
@@ -85,7 +100,7 @@ def like_challenge():
         # 서비스 호출
         result = like_challenge_service(user_id, challenge_id)
         return jsonify(result), 201
-    except ValueError as e:
-        return jsonify({"error": str(e)}), 400
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    except ValueError:
+        return jsonify({"error": "??"}), 400
+    except Exception:
+        return jsonify({"error": "??"}), 500

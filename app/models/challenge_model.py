@@ -1,6 +1,6 @@
 from flask import current_app
 from datetime import datetime, timedelta
-from app.utils.ChallengeSortTypeEnum import ChallengeSortType
+from app.utils.enum.ChallengeSortTypeEnum import ChallengeSortType
 from bson import ObjectId
 
 
@@ -24,6 +24,7 @@ def get_public_challenge_model(sort_type):
 
         for c in challenges:
             c["_id"] = str(c["_id"])
+            c["user_id"] = str(c["user_id"])
 
         return challenges
 
@@ -39,7 +40,7 @@ def get_private_challenge_model(sort_type, user_id):
 
         sort_type = ChallengeSortType(sort_type)  # ✅ Enum으로 변환
 
-        query = {"user_id": user_id, "is_public": False}
+        query = {"user_id": ObjectId(user_id), "is_public": False}
 
         if sort_type == ChallengeSortType.LIKE:
             challenges = list(challenge_collection.find(query).sort("like_count", -1))
@@ -52,6 +53,7 @@ def get_private_challenge_model(sort_type, user_id):
 
         for c in challenges:
             c["_id"] = str(c["_id"])
+            c["user_id"] = str(c["user_id"])
 
         return challenges
 
@@ -75,7 +77,7 @@ def post_challenges_model(challenge_data, user_id):
             "topic": challenge_data["topic"],
             "challenge_count": count,
             "is_public": challenge_data["is_public"],
-            "user_id": user_id,
+            "user_id": ObjectId(user_id),
             "like_count": 0,
             "comment_count": 0,
             "start_date": today,  # 2025-07-08
@@ -85,13 +87,7 @@ def post_challenges_model(challenge_data, user_id):
         }
 
         result = challenge_collection.insert_one(challenge)
-        return {
-            "success": True,
-            "data": {
-                "challenge_id": str(result.inserted_id),
-            },
-            "message": "챌린지 등록이 되었습니다.",
-        }
+        return result
 
     except Exception as e:
         # 데이터베이스 오류 또는 기타 예상치 못한 오류
