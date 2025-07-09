@@ -16,25 +16,25 @@
 
         <div class="mb-5">
             <label for="email" class="block text-sm font-medium text-gray-700 mb-2">이메일 주소</label>
-            <input type="email" id="email" name="email" placeholder="email@example.com" required
+            <input type="email" id="register_email" name="email" placeholder="email@example.com" required
                 class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-base transition duration-150 ease-in-out">
         </div>
 
         <div class="mb-5">
             <label for="nickname" class="block text-sm font-medium text-gray-700 mb-2">닉네임</label>
-            <input type="text" id="nickname" name="nickname" placeholder="멋진 닉네임을 입력하세요" required
+            <input type="text" id="register_nickname" name="nickname" placeholder="멋진 닉네임을 입력하세요" required
                 class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-base transition duration-150 ease-in-out">
         </div>
 
         <div class="mb-5">
             <label for="password" class="block text-sm font-medium text-gray-700 mb-2">비밀번호</label>
-            <input type="password" id="password" name="password" placeholder="비밀번호 (8자 이상)" required minlength="8"
+            <input type="password" id="register_password" name="password" placeholder="비밀번호 (8자 이상)" required minlength="8"
                 class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-base transition duration-150 ease-in-out">
         </div>
 
         <div class="mb-6">
             <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-2">비밀번호 확인</label>
-            <input type="password" id="confirm_password" name="confirm_password" placeholder="비밀번호를 다시 입력하세요" required
+            <input type="password" id="register_confirm_password" name="confirm_password" placeholder="비밀번호를 다시 입력하세요" required
                 class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-base transition duration-150 ease-in-out">
             <p id="password_match_status" class="mt-2 text-sm text-red-600 hidden">비밀번호가 일치하지 않습니다.</p>
         </div>
@@ -50,9 +50,9 @@
 {% block page_js %}
 <script>
     function submit_register() {
-        let email = $("#email").val();
-        let password = $("#password").val();
-        let nickname = $("#nickname").val();
+        let email = $("#register_email").val();
+        let password = $("#register_password").val();
+        let nickname = $("#register_nickname").val();
 
         // 유효성 검사 우선 빈 값 확인으로 구현. 이메일 형식 확인, 비밀번호 강도 같은 방법도 있음.
         if ('' === email) {
@@ -70,6 +70,11 @@
             return false;
         }
 
+        if ($("#register_confirm_password").val() != password) {
+            alert("비밀번호가 일치하지 않습니다.");
+            return false;
+        }
+
         $.ajax({
             type: "POST",
             url: "/sign-up",
@@ -78,7 +83,7 @@
                 if (true == response["success"]) {
                     alert("회원가입 성공!");
 
-                    window.location.href="/";   // 토큰 유무로 페이지 다르게 보이게 처리할 예정
+                    window.location.href = "/";   // 토큰 유무로 페이지 다르게 보이게 처리할 예정
                 }
                 else {
                     alert("서버 오류!");    // 어떻게 처리할 지 회의 필요
@@ -87,4 +92,8 @@
         })
     }
 </script>
+{% endblock %}
+
+{% block add_ready_js %}
+$('#submit_register_btn').on('click', submit_register);
 {% endblock %}
