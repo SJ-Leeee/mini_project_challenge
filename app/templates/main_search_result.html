@@ -1,0 +1,40 @@
+{% extends "base_page.html" %}
+
+{% block title %}ChallengeMe{% endblock %}
+
+{% block page_css %}
+{% endblock %}
+
+{% block header %}
+{% include 'navigation_bar.html' %}
+{% endblock %}
+
+{% block main %}
+<div class="mt-20">
+    {% for r in results %}
+    <div class="flex items-center bg-gray-100 rounded-2xl shadow p-4 max-w-3xl w-full mx-auto mb-4">
+        <!-- 사진 -->
+        <div class="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0">
+            <img src="https://cdn.pixabay.com/photo/2023/06/29/12/28/cats-8096304_1280.jpg" alt="사진"
+                class="w-full h-full object-cover" />
+        </div>
+        <!-- 내용 -->
+        <div class="flex-1 px-4 space-y-1">
+            <!-- 제목 + 응원 -->
+            <div class="flex justify-between items-center">
+                <h2 class="text-lg font-semibold text-gray-800">{{ r.title }}</h2>
+                <p class="text-sm text-gray-500">{{ r.likes }} 명이 응원중</p>
+            </div>
+            <!-- 날짜 정보 -->
+            <div class="text-sm text-gray-600 mt-2">
+                <p>시작한지 {{ r.days_from_start }}일째</p>
+                <p>도전 종료까지 {{ r.days_until_end }}일 남았습니다.</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block page_js %}
+{% endblock %}
