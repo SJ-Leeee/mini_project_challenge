@@ -13,7 +13,7 @@ def create_user(data):
 # def get_user(user_id):
 # return get_user_by_id(user_id)
 
-
+# TODO: email, password 유효성 검사 로직 추가 필요
 def sign_up_user(data):
     """
     회원가입 요청 데이터를 받아 유저 등록을 처리합니다.
@@ -32,7 +32,10 @@ def sign_up_user(data):
         return {"success": False, "data": {}, "message": "이미 존재하는 이메일입니다."}
 
     # 비밀번호 해싱
-    hashed_pw = bcrypt.hashpw(password.encode(), bcrypt.gensalt)
+    if isinstance(password, str):
+        password = password.encode()
+
+    hashed_pw = bcrypt.hashpw(password, bcrypt.gensalt())
 
     insert_user({"nickname": nickname, "email": email, "password": hashed_pw.decode()})
 
