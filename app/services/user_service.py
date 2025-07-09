@@ -107,4 +107,5 @@ def log_in_user(email, password):
         return False, None, "비밀번호가 일치하지 않습니다."
 
     token = create_access_token(user["_id"])
+
     return True, token, "로그인 성공"

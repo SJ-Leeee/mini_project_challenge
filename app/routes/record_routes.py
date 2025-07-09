@@ -69,7 +69,9 @@ def get_all_record():
     try:
         challenge_id = request.args.get("challenge_id")
 
+
         result = get_all_record_by_challenge_id(challenge_id)
+
         return jsonify(
             {
                 "success": True,

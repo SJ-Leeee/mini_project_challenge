@@ -29,7 +29,7 @@ def log_in():
     password = request.form["password_give"]
 
     success, token, message = log_in_user(email, password)
-
+    # jwt 토큰
     if not success:
         return jsonify({"success": False, "data": {}, "message": message})
 
