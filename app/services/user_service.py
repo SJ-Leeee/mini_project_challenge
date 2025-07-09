@@ -69,9 +69,9 @@ def log_in_user(email, password):
             - message (str): 처리 결과 메시지 (성공/실패 이유)
     """
     
-    if is_valid_email(email):
+    if not is_valid_email(email):
         return {"success": False, "data":{}, "message": "이메일 형식이 올바르지 않습니다."}
-    if is_valid_password(password):
+    if not is_valid_password(password):
         return {"success": False, "data":{}, "message": "비밀번호 형식이 올바르지 않습니다."}
 
     db = current_app.config["DB"]

@@ -1,4 +1,4 @@
-import re
+from email_validator import validate_email, EmailNotValidError
 
 def is_valid_email(email: str) -> bool:
     """
@@ -11,10 +11,11 @@ def is_valid_email(email: str) -> bool:
         bool: 유효한 형식이면 True, 아니면 False
     """
 
-    email_regex = re.compile(
-        r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
-    )
-    return re.fullmatch(email_regex, email) is not None
+    try:
+        valid = validate_email(email)
+        return True, valid.normalized
+    except EmailNotValidError:
+        return False
 
 def is_valid_password(password: str) -> bool:
     """
@@ -26,5 +27,5 @@ def is_valid_password(password: str) -> bool:
     Returns:
         bool: 유효하면 True, 아니면 False
     """
-    
+
     return len(password) >= 8
