@@ -20,8 +20,13 @@ s3 = boto3.client(
 
 def upload_file_to_s3(file, filename):
     try:
-        s3.upload_fileobj(file, S3_BUCKET_NAME, filename)
-        url = f"https://{S3_BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com/{filename}"
+        key = f"public/{filename}"
+        s3.upload_fileobj(
+            file,
+            S3_BUCKET_NAME,
+            key,
+        )
+        url = f"https://{S3_BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com/{key}"
         return url
     except ClientError as e:
         raise ValueError(f"S3 Upload Error: {e}")
