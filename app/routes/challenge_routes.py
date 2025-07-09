@@ -72,6 +72,7 @@ def post_challenge():
         return jsonify({"error": str(e)}), 500
 
 
+# localhost:5000/api/challenge/like
 @challenge_bp.route("/like", methods=["PATCH"])
 def like_challenge():
     challenge_id = request.args.get("challenge_id")  # 기본값 지정 = Optional
