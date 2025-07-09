@@ -11,6 +11,7 @@
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 16px;
     padding: 20px 0;
+    max-width: 100%;
   }
 
   .record-item {
@@ -67,6 +68,98 @@
     padding: 24px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .challenge-details {
+    flex: 1;
+  }
+
+  .challenge-stats {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+
+  .stat-circle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .circle-container {
+    position: relative;
+    width: 80px;
+    height: 80px;
+  }
+
+  .circle-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #f1f5f9;
+    border: 4px solid #e2e8f0;
+  }
+
+  .circle-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 4px solid transparent;
+    background: conic-gradient(
+      from 0deg,
+      var(--progress-color) 0%,
+      var(--progress-color) var(--progress-percent),
+      transparent var(--progress-percent)
+    );
+    transition: all 0.3s ease;
+  }
+
+  .circle-progress.completion {
+    --progress-color: #3b82f6;
+  }
+
+  .circle-progress.success-rate {
+    --progress-color: #10b981;
+  }
+
+  .circle-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #1f2937;
+  }
+
+  .circle-percent {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .circle-label {
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  .stat-details {
+    font-size: 10px;
+    color: #9ca3af;
+    text-align: center;
+    line-height: 1.2;
   }
 
   .records-section {
@@ -74,6 +167,9 @@
     border-radius: 12px;
     padding: 24px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
   .section-title {
@@ -120,7 +216,7 @@
     position: absolute;
     top: 8px;
     left: 8px;
-    background-color: rgba(59, 130, 246, 0.9); /* Tailwind의 blue-500 */
+    background-color: rgba(59, 130, 246, 0.9);
     color: white;
     padding: 4px 8px;
     font-size: 12px;
@@ -128,6 +224,32 @@
     border-radius: 8px;
     z-index: 2;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  /* 반응형 */
+  @media (max-width: 768px) {
+    .challenge-info {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .challenge-stats {
+      gap: 24px;
+    }
+
+    .circle-container {
+      width: 70px;
+      height: 70px;
+    }
+
+    .circle-percent {
+      font-size: 14px;
+    }
+
+    .record-grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
   }
 </style>
 <!-- prettier-ignore -->
@@ -151,181 +273,316 @@
         <span>{{ end_date }}</span>
       </div>
     </div>
-  </div>
 
-  <div class="flex gap-6 justify-center mb-6">
-    <!-- 인증 내역 섹션 -->
-    <div class="records-section">
-      <div class="section-title">
-        # 인증 내역
-        <span class="record-count" id="record-count">0</span>
-      </div>
-
-      <!-- 레코드 그리드 -->
-      <div id="records-container">
-        <div class="record-grid" id="records-grid">
-          <!-- 레코드들이 여기에 동적으로 추가됩니다 -->
+    <!-- 통계 원형 차트 -->
+    <div class="challenge-stats">
+      <!-- 완료율 (전체 중 인증 개수) -->
+      <div class="stat-circle">
+        <div class="circle-container">
+          <div class="circle-bg"></div>
+          <div class="circle-progress completion" id="completion-circle">
+            <div class="circle-content">
+              <div class="circle-percent" id="completion-percent">0%</div>
+            </div>
+          </div>
         </div>
+        <div class="circle-label">지금까지 이만큼 했어요!</div>
+        <div class="stat-details" id="completion-details">0/0</div>
       </div>
 
-      <!-- 빈 상태 표시 -->
-      <div class="empty-state" id="empty-state" style="display: none">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-          ></path>
-        </svg>
-        <p class="text-lg font-medium mb-2">아직 인증된 기록이 없습니다</p>
-        <p class="text-sm">첫 번째 인증을 시작해보세요!</p>
+      <!-- 성공률 (기간 중 인증한 날의 비율) -->
+      <div class="stat-circle">
+        <div class="circle-container">
+          <div class="circle-bg"></div>
+          <div class="circle-progress success-rate" id="success-circle">
+            <div class="circle-content">
+              <div class="circle-percent" id="success-percent">0%</div>
+            </div>
+          </div>
+        </div>
+        <div class="circle-label">나의 성공률이에요!</div>
+        <div class="stat-details" id="success-details">0/0</div>
       </div>
     </div>
   </div>
-  {% endblock %} {% block page_js %}
-  <script>
-    let currentChallengeId = '{{ challenge_id }}';
-    let recordsData = [
-      {
-        _id: '686e6bf8271d71d652ccdc07',
-        challenge_id: '686e6307d14d8de2cf38574d',
-        created_date: '0701',
-        oneline_diary: '바',
-        photo_url: 'https://i.pinimg.com/736x/f8/0d/03/f80d03c745e2138d36d1af6a07be8b93.jpg',
-      },
-    ];
-    function loadRecords() {
-      $.ajax({
-        type: 'GET',
-        url: '/api/record',
-        data: { challenge_id: currentChallengeId },
-        success: function (response) {
-          if (response.success) {
-            console.log('하이루');
-            recordsData = response.data;
-            renderRecords();
-          } else {
-            console.error('레코드 조회 실패:', response.error);
-            showEmptyState();
-          }
-        },
-        error: function (xhr, status, error) {
-          console.error('API 요청 실패:', error);
+
+  <!-- 인증 내역 섹션 -->
+  <div class="records-section">
+    <div class="section-title">
+      # 인증 내역
+      <span class="record-count" id="record-count">0</span>
+    </div>
+
+    <!-- 레코드 그리드 -->
+    <div id="records-container">
+      <div class="record-grid" id="records-grid">
+        <!-- 레코드들이 여기에 동적으로 추가됩니다 -->
+      </div>
+    </div>
+
+    <!-- 빈 상태 표시 -->
+    <div class="empty-state" id="empty-state" style="display: none">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+        ></path>
+      </svg>
+      <p class="text-lg font-medium mb-2">아직 인증된 기록이 없습니다</p>
+      <p class="text-sm">첫 번째 인증을 시작해보세요!</p>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block page_js %}
+<script>
+  let currentChallengeId = '{{ challenge_id }}';
+  let challengeCount = ' {{ challenge_count }}'; // 전체 개수
+  let startDate = '{{ start_date }}'; // "Wed, 09 Jul 2025 16:05:32 GMT"
+  let endDate = '{{ end_date }}';
+
+  let recordsData = [
+    {
+      _id: '686e6bf8271d71d652ccdc07',
+      challenge_id: '686e6307d14d8de2cf38574d',
+      created_date: '0701',
+      oneline_diary: '바',
+      photo_url: 'https://i.pinimg.com/736x/f8/0d/03/f80d03c745e2138d36d1af6a07be8b93.jpg',
+    },
+    {
+      _id: '686e6bf8271d71d652ccdc08',
+      challenge_id: '686e6307d14d8de2cf38574d',
+      created_date: '0702',
+      oneline_diary: '테스트',
+      photo_url: 'https://i.pinimg.com/736x/f8/0d/03/f80d03c745e2138d36d1af6a07be8b93.jpg',
+    },
+    {
+      _id: '686e6bf8271d71d652ccdc09',
+      challenge_id: '686e6307d14d8de2cf38574d',
+      created_date: '0705',
+      oneline_diary: '또테스트',
+      photo_url: 'https://i.pinimg.com/736x/f8/0d/03/f80d03c745e2138d36d1af6a07be8b93.jpg',
+    },
+  ];
+
+  function loadRecords() {
+    $.ajax({
+      type: 'GET',
+      url: '/api/record',
+      data: { challenge_id: currentChallengeId },
+      success: function (response) {
+        if (response.success) {
+          console.log('하이루');
+          recordsData = response.data;
+          renderRecords();
+        } else {
+          console.error('레코드 조회 실패:', response.error);
           showEmptyState();
-        },
-      });
-    }
-    renderRecords();
-
-    function renderRecords() {
-      const recordsGrid = $('#records-grid');
-      const recordCount = $('#record-count');
-      const emptyState = $('#empty-state');
-
-      if (!recordsData || recordsData.length === 0) {
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error('API 요청 실패:', error);
         showEmptyState();
-        return;
-      }
+      },
+    });
+  }
 
-      // 빈 상태 숨기기
-      emptyState.hide();
-      recordsGrid.show();
+  // GMT 날짜 파싱 함수
+  function parseGMTDate(gmtString) {
+    // "Wed, 09 Jul 2025 16:05:32 GMT" -> Date 객체
+    return new Date(gmtString);
+  }
 
-      // 레코드 개수 업데이트
-      recordCount.text(recordsData.length);
+  // Date 객체를 MMDD 형태로 변환
+  function formatToMMDD(date) {
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return month + day;
+  }
 
-      // 그리드 초기화
-      recordsGrid.empty();
+  // 시작일부터 오늘까지의 모든 날짜를 MMDD 형태로 생성
+  function getDatesBetween(startDate, endDate) {
+    const dates = [];
+    const currentDate = new Date(startDate);
+    const end = new Date(endDate);
 
-      // 각 레코드에 대해 아이템 생성
-      recordsData.forEach(function (record) {
-        const recordItem = createRecordItem(record);
-        recordsGrid.append(recordItem);
-      });
+    while (currentDate <= end) {
+      dates.push(formatToMMDD(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
     }
 
-    function createRecordItem(record) {
-      const recordId = record._id;
-      const photoUrl = record.photo_url;
-      const createdDateRaw = record.created_date;
-      const createdDate = formatKoreanDate(createdDateRaw);
+    return dates;
+  }
 
-      let itemHtml;
+  // 통계 계산
+  function calculateStats() {
+    const today = new Date();
+    const startDateObj = parseGMTDate(startDate);
+    const endDateObj = parseGMTDate(endDate);
 
-      if (photoUrl) {
-        // 사진이 있는 경우
-        itemHtml = `
-                <div class="record-item has-photo" data-record-id="${recordId}" title="인증일: ${createdDate}">
-                  <img src="${photoUrl}" alt="인증 사진 (${createdDate})" onerror="handleImageError(this)">
-                  <div class="record-badge">${createdDate}</div>
-                </div>
-              `;
-      } else {
-        // 사진이 없는 경우
-        itemHtml = `
-                <div class="record-item has-photo" data-record-id="${recordId}" title="인증일: ${createdDate}">
-                  <div class="text-sm font-medium mb-1">사진 없음</div>
-                  <div class="record-badge">${createdDate}</div>
-              </div>
-            `;
-      }
+    // 1. 완료율 계산 (전체 챌린지 중 인증 개수)
+    const completedCount = recordsData.length;
+    const completionRate =
+      challengeCount > 0 ? Math.round((completedCount / challengeCount) * 100) : 0;
 
-      return $(itemHtml);
+    // 2. 성공률 계산 (시작일부터 오늘까지 중 인증한 날의 비율)
+    const challengeEndDate = endDateObj < today ? endDateObj : today;
+    const allDatesInPeriod = getDatesBetween(startDateObj, challengeEndDate);
+    const certifiedDates = new Set(recordsData.map((record) => record.created_date));
+    const successfulDays = allDatesInPeriod.filter((date) => certifiedDates.has(date)).length;
+    const totalDaysInPeriod = allDatesInPeriod.length;
+    const successRate =
+      totalDaysInPeriod > 0 ? Math.round((successfulDays / totalDaysInPeriod) * 100) : 0;
+
+    return {
+      completionRate,
+      completedCount,
+      totalChallenges: challengeCount,
+      successRate,
+      successfulDays,
+      totalDaysInPeriod,
+    };
+  }
+
+  // 원형 차트 진행률 업데이트
+  function updateCircleProgress(circleId, percentage) {
+    const circle = document.getElementById(circleId);
+    if (circle) {
+      circle.style.setProperty('--progress-percent', percentage + '%');
+    }
+  }
+
+  // 통계 렌더링
+  function renderStats() {
+    const stats = calculateStats();
+
+    // 완료율 업데이트
+    $('#completion-percent').text(stats.completionRate + '%');
+    $('#completion-details').text(`${stats.completedCount}/${stats.totalChallenges}`);
+    updateCircleProgress('completion-circle', stats.completionRate);
+
+    // 성공률 업데이트
+    $('#success-percent').text(stats.successRate + '%');
+    $('#success-details').text(`${stats.successfulDays}/${stats.totalDaysInPeriod}일`);
+    updateCircleProgress('success-circle', stats.successRate);
+  }
+
+  function renderRecords() {
+    const recordsGrid = $('#records-grid');
+    const recordCount = $('#record-count');
+    const emptyState = $('#empty-state');
+
+    if (!recordsData || recordsData.length === 0) {
+      showEmptyState();
+      return;
     }
 
-    function handleImageError(img) {
-      // 이미지 로드 실패 시 처리
-      const parent = $(img).parent();
-      const recordId = parent.data('record-id');
-      const createdDate = parent.attr('title').replace('인증일: ', '');
+    // 빈 상태 숨기기
+    emptyState.hide();
+    recordsGrid.show();
 
-      parent.removeClass('record-item has-photo').addClass('record-item no-photo');
-      parent.html(`
-                <div>
-                    <div class="text-sm font-medium mb-1">이미지 로드 실패</div>
-                    <div class="text-xs">${createdDate}</div>
-                </div>
-            `);
-    }
+    // 레코드 개수 업데이트
+    recordCount.text(recordsData.length);
 
-    function showEmptyState() {
-      $('#records-grid').hide();
-      $('#empty-state').show();
-      $('#record-count').text('0');
-    }
+    // 그리드 초기화
+    recordsGrid.empty();
 
-    function onRecordClick(recordId) {
-      // 레코드 클릭 시 상세 보기나 다른 액션 수행
-      console.log('레코드 클릭:', recordId);
-      // 필요에 따라 모달 열기나 다른 페이지로 이동 등의 액션 추가
-    }
-    // datetime.datetime(2025, 7, 9, 21, 39, 35, 193000)
-    $(document).ready(function () {
-      // 페이지 로드 시 레코드 조회
-      loadRecords();
-
-      // 레코드 클릭 이벤트 (동적으로 추가되는 요소에 대한 이벤트 위임)
-      $(document).on('click', '.record-item', function () {
-        const recordId = $(this).data('record-id');
-        onRecordClick(recordId);
-      });
+    // 각 레코드에 대해 아이템 생성
+    recordsData.forEach(function (record) {
+      const recordItem = createRecordItem(record);
+      recordsGrid.append(recordItem);
     });
 
-    function formatKoreanDate(mmdd) {
-      if (!mmdd || mmdd.length !== 4) return mmdd;
+    // 통계 렌더링
+    renderStats();
+  }
 
-      const month = parseInt(mmdd.slice(0, 2), 10);
-      const day = parseInt(mmdd.slice(2, 4), 10);
+  function createRecordItem(record) {
+    const recordId = record._id;
+    const photoUrl = record.photo_url;
+    const createdDateRaw = record.created_date;
+    const createdDate = formatKoreanDate(createdDateRaw);
 
-      return `${month}월 ${day}일`;
+    let itemHtml;
+
+    if (photoUrl) {
+      // 사진이 있는 경우
+      itemHtml = `
+        <div class="record-item has-photo" data-record-id="${recordId}" title="인증일: ${createdDate}">
+          <img src="${photoUrl}" alt="인증 사진 (${createdDate})" onerror="handleImageError(this)">
+          <div class="record-badge">${createdDate}</div>
+        </div>
+      `;
+    } else {
+      // 사진이 없는 경우
+      itemHtml = `
+        <div class="record-item has-photo" data-record-id="${recordId}" title="인증일: ${createdDate}">
+          <div class="text-sm font-medium mb-1">사진 없음</div>
+          <div class="record-badge">${createdDate}</div>
+        </div>
+      `;
     }
-  </script>
-  <!-- prettier-ignore -->
 
-  {% endblock %}
+    return $(itemHtml);
+  }
+
+  function handleImageError(img) {
+    // 이미지 로드 실패 시 처리
+    const parent = $(img).parent();
+    const recordId = parent.data('record-id');
+    const createdDate = parent.attr('title').replace('인증일: ', '');
+
+    parent.removeClass('record-item has-photo').addClass('record-item no-photo');
+    parent.html(`
+      <div>
+        <div class="text-sm font-medium mb-1">이미지 로드 실패</div>
+        <div class="text-xs">${createdDate}</div>
+      </div>
+    `);
+  }
+
+  function showEmptyState() {
+    $('#records-grid').hide();
+    $('#empty-state').show();
+    $('#record-count').text('0');
+    // 빈 상태일 때도 통계 업데이트
+    renderStats();
+  }
+
+  function onRecordClick(recordId) {
+    // 레코드 클릭 시 상세 보기나 다른 액션 수행
+    console.log('레코드 클릭:', recordId);
+    // 필요에 따라 모달 열기나 다른 페이지로 이동 등의 액션 추가
+  }
+
+  $(document).ready(function () {
+    // 페이지 로드 시 레코드 조회
+    loadRecords();
+
+    // 레코드 클릭 이벤트 (동적으로 추가되는 요소에 대한 이벤트 위임)
+    $(document).on('click', '.record-item', function () {
+      const recordId = $(this).data('record-id');
+      onRecordClick(recordId);
+    });
+  });
+
+  function formatKoreanDate(mmdd) {
+    if (!mmdd || mmdd.length !== 4) return mmdd;
+
+    const month = parseInt(mmdd.slice(0, 2), 10);
+    const day = parseInt(mmdd.slice(2, 4), 10);
+
+    return `${month}월 ${day}일`;
+  }
+
+  // 초기 렌더링 (테스트용)
+  renderRecords();
+</script>
+<!-- prettier-ignore -->
+
+{% endblock %}
 
 {% block add_ready_js %}
-  <!-- // 추가 초기화 코드가 필요한 경우 여기에 작성 -->
-  {% endblock %}
-</div>
+<!-- // 추가 초기화 코드가 필요한 경우 여기에 작성 -->
+{% endblock %}
