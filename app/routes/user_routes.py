@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, current_app, make_response
+from flask import Blueprint, request, jsonify, current_app, make_response, redirect
 from app.services.user_service import sign_up_user, log_in_user
 
 user_bp = Blueprint("user", __name__)
@@ -44,4 +44,10 @@ def log_in():
     )
     response.set_cookie("access_token", token, httponly=True)
 
+    return response
+
+@user_bp.route("/logout")
+def logout():
+    response = make_response(redirect("/login"))  # 로그아웃 후 로그인 페이지로 이동
+    response.set_cookie("access_token", "", expires=0)
     return response
