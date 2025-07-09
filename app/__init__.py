@@ -27,7 +27,7 @@ def create_app():
     print(datetime.now())
 
     # user.router에 있는 주소들 앞에 users 고정 역할
-    app.register_blueprint(user_bp, url_prefix="/api/users")
+    app.register_blueprint(user_bp, url_prefix="/api/user")
     app.register_blueprint(challenge_bp, url_prefix="/api/challenge")
 
     app.register_blueprint(rendering_bp)
