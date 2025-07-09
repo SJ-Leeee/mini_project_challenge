@@ -1,13 +1,11 @@
 from flask import current_app
-from datetime import datetime, timedelta
 from app.models.user_model import insert_user, is_email_exist
+from app.services.auth_service import create_access_token
+from app.utils.validation_utils import is_valid_email, is_valid_password
+
 
 import bcrypt
 import jwt
-
-# JWT 관련 상수 설정
-SECRET_KEY = "HYEONGILSEUNGJUNJIHOON"
-EXPIRE_TIME = 15  # access token의 만료 기간 (분)
 
 
 def create_user(data):
@@ -37,6 +35,11 @@ def sign_up_user(data):
     email = data.get("email_give")
     password = data.get("password_give")
 
+    if is_valid_email(email):
+        return {"success": False, "data":{}, "message": "이메일 형식이 올바르지 않습니다."}
+    if is_valid_password(password):
+        return {"success": False, "data":{}, "message": "비밀번호 형식이 올바르지 않습니다."}
+
     if is_email_exist(email):
         return {"success": False, "data": {}, "message": "이미 존재하는 이메일입니다."}
 
@@ -49,21 +52,6 @@ def sign_up_user(data):
     insert_user({"nickname": nickname, "email": email, "password": hashed_pw.decode()})
 
     return {"success": True, "data": {}, "message": "회원가입이 완료되었습니다."}
-
-
-def create_access_token(id):
-    """
-    사용자 ID(ObjectId)를 받아 access token(JWT)을 생성하는 함수
-
-    Parameter:
-        id (ObjectId): mongoDB에서 user를 삽입 시 자동으로 생성되는 ObjectId
-    """
-
-    payload = {
-        "_id": str(id),  # ObjectId는 str로 변환.
-        "exp": datetime.now() + timedelta(minutes=EXPIRE_TIME),
-    }
-    return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
 
 def log_in_user(email, password):
@@ -80,6 +68,12 @@ def log_in_user(email, password):
             - token (str or None): 로그인 성공 시 JWT access token, 실패 시 None
             - message (str): 처리 결과 메시지 (성공/실패 이유)
     """
+    
+    if is_valid_email(email):
+        return {"success": False, "data":{}, "message": "이메일 형식이 올바르지 않습니다."}
+    if is_valid_password(password):
+        return {"success": False, "data":{}, "message": "비밀번호 형식이 올바르지 않습니다."}
+
     db = current_app.config["DB"]
     user = db["users"].find_one({"email": email})
 

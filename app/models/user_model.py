@@ -24,4 +24,4 @@ def is_email_exist(email):
         bool: 이미 존재하면 True, 없으면 False.
     """
     db = current_app.config["DB"]
-    return db.user_info.find_one({"email": email}) is not None
+    return db["users"].find_one({"email": email}) is not None

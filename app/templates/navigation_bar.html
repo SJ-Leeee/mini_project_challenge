@@ -1,0 +1,23 @@
+<navigation_bar>
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+        <div class="max-w-screen-md mx-auto h-14 px-4 flex items-center justify-between">
+            <div class="flex-shrink-0">
+                <a href="/" class="text-2xl font-semibold text-gray-800 font-serif">ChallengeMe</a>
+            </div>
+
+            <nav class="flex items-center space-x-6">
+                {% if current_user_nickname %}
+                <button id="mypage_btn" class="flex items-center text-blue-500 hover:bg-blue-100 hover:text-blue-700 font-semibold py-2 px-4 rounded-md transition duration-200 text-sm">
+                    {{ current_user_nickname }} 님
+                    <img src="../static/images/profile.jpg" alt="프로필" class="w-6 h-6 ml-2 rounded-full">
+                </button>
+                {% else %}
+                <button id="open_LoginModal_btn" class="flex items-center text-blue-500 hover:bg-blue-100 hover:text-blue-700 font-semibold py-2 px-4 rounded-md transition duration-200 text-sm">
+                    로그인 하기
+                    <img src="../static/images/profile.jpg" alt="로그인" class="w-6 h-6 ml-2 rounded-full">
+                </button>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+</navigation_bar>

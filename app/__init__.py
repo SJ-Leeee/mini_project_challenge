@@ -6,7 +6,7 @@ from pymongo import MongoClient
 from app.config.default import Config
 
 from app.routes.user_routes import user_bp
-from app.routes.mainpage_routes import main_bp
+from app.routes.rendering_routes import rendering_bp
 from app.routes.challenge_routes import challenge_bp
 from app.routes.record_routes import record_bp
 from datetime import datetime
@@ -31,6 +31,6 @@ def create_app():
     app.register_blueprint(challenge_bp, url_prefix="/api/challenge")
     app.register_blueprint(record_bp, url_prefix="/api/record")
 
-    app.register_blueprint(main_bp)
+    app.register_blueprint(rendering_bp)
 
     return app
