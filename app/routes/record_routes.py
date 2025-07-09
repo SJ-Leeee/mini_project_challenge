@@ -70,6 +70,7 @@ def get_all_record():
         print(challenge_id)
 
         result = get_all_record_service(challenge_id)
+
         return jsonify(
             {
                 "success": True,

@@ -36,9 +36,17 @@ def sign_up_user(data):
     password = data.get("password_give")
 
     if not is_valid_email(email):
-        return {"success": False, "data":{}, "message": "이메일 형식이 올바르지 않습니다."}
+        return {
+            "success": False,
+            "data": {},
+            "message": "이메일 형식이 올바르지 않습니다.",
+        }
     if not is_valid_password(password):
-        return {"success": False, "data":{}, "message": "비밀번호 형식이 올바르지 않습니다."}
+        return {
+            "success": False,
+            "data": {},
+            "message": "비밀번호 형식이 올바르지 않습니다.",
+        }
 
     if is_email_exist(email):
         return {"success": False, "data": {}, "message": "이미 존재하는 이메일입니다."}
@@ -91,4 +99,5 @@ def log_in_user(email, password):
         return False, None, "비밀번호가 일치하지 않습니다."
 
     token = create_access_token(user["_id"])
+
     return True, token, "로그인 성공"
