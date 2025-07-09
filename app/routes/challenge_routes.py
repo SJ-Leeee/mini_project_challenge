@@ -4,7 +4,7 @@ from app.services.challenge_service import (
     create_challenge_service,
     like_challenge_service,
 )
-from app.utils.ChallengeSortTypeEnum import ChallengeSortType
+from app.utils.enum.ChallengeSortTypeEnum import ChallengeSortType
 
 challenge_bp = Blueprint("challenge", __name__)
 

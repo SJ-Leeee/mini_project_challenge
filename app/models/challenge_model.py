@@ -1,6 +1,6 @@
 from flask import current_app
 from datetime import datetime, timedelta
-from app.utils.ChallengeSortTypeEnum import ChallengeSortType
+from app.utils.enum.ChallengeSortTypeEnum import ChallengeSortType
 from bson import ObjectId
 
 
