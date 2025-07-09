@@ -2,7 +2,7 @@ import os
 
 from bson import ObjectId
 from flask import current_app
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import jwt
 
@@ -24,7 +24,7 @@ def create_access_token(id):
 
     payload = {
         "_id": str(id),  # ObjectId는 str로 변환.
-        "exp": datetime.now() + timedelta(minutes=EXPIRE_TIME),
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=EXPIRE_TIME),
     }
     return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
