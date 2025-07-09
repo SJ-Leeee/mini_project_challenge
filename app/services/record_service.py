@@ -1,3 +1,4 @@
+from bson.objectid import ObjectId
 from app.models.record_model import (
     get_challenge_by_id_with_userId,
     post_record_model,
@@ -5,6 +6,7 @@ from app.models.record_model import (
     get_all_record_model,
     get_one_record_by_id_model,
     delete_record_model,
+    get_challenge_by_id,
 )
 
 
@@ -45,13 +47,17 @@ def get_all_record_service(challenge_id):
     return records
 
 
-def delete_record_service(record_id):
+def delete_record_service(record_id, user_id):
     record = get_one_record_by_id_model(record_id)
-    print(record)
+
     if not record:
         raise ValueError("record is not exist")
+    challenge = get_challenge_by_id(record["challenge_id"])
+    if challenge["user_id"] != ObjectId(user_id):
+        raise ValueError("권한이 존재하지 않습니다.")
 
     result = delete_record_model(record_id)
+
     return result
 
 

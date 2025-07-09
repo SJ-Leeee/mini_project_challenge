@@ -92,7 +92,8 @@ def delete_record(record_id):
     try:
         user_id = "686cd2b4fce5f626c62cad5a"
 
-        result = delete_record_service(record_id)
+        delete_record_service(record_id, user_id)
+
         return jsonify(
             {
                 "success": True,
