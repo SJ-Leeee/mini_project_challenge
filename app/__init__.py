@@ -19,13 +19,18 @@ db = None
 def create_app():
     global db
     app = Flask(__name__)
+
     # config에서 설정파일 가져옴
     app.config.from_object(Config)
     client = MongoClient(app.config["MONGO_URI"])
+
     db = client.get_database()
     # app.config에 db정보 저장
     # 현재는 로컬의 test DB 사용중
     app.config["DB"] = db
+
+    app.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
+
     # url고정 및 라우트 등록
     app.register_blueprint(user_bp, url_prefix="/api/user")
     app.register_blueprint(challenge_bp, url_prefix="/api/challenge")
