@@ -7,10 +7,6 @@ file_bp = Blueprint("file", __name__)
 @file_bp.route("/", methods=["POST"])
 def upload():
     try:
-        print(f"Content-Type: {request.content_type}")
-        print(f"Content-Length: {request.content_length}")
-        print(f"Files: {request.files}")
-        print(f"Form: {request.form}")
         file = request.files.get("file")
         if not file:
             return jsonify({"error": "파일이 없습니다."}), 400
