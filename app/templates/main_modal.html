@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>검색 모달</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <!-- 모달 오버레이 -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <!-- 모달 컨테이너 -->
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-md">
+            <!-- 모달 헤더 -->
+            <div class="p-6 pb-4">
+                <!-- 검색 입력 -->
+                <div class="mb-4">
+                    <input type="text"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="검색어를 입력하세요" value="{{ search_query or '' }}">
+                </div>
+
+                <!-- 필터 옵션들 -->
+                <div class="space-y-3">
+                    <!-- 토픽 선택 -->
+                    <div class="flex items-center justify-between">
+                        <label class="text-sm font-medium text-gray-700">토픽</label>
+                        <div class="flex items-center">
+                            <select
+                                class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="all" {{ 'selected' if topic=='all' else '' }}>전체</option>
+                                <option value="health" {{ 'selected' if topic=='health' else '' }}>운동</option>
+                                <option value="study" {{ 'selected' if topic=='study' else '' }}>공부</option>
+                                <option value="life" {{ 'selected' if topic=='life' else '' }}>생활</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 정렬 기준 -->
+                    <div class="flex items-center justify-between">
+                        <label class="text-sm font-medium text-gray-700">정렬</label>
+                        <div class="flex items-center">
+                            <select
+                                class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="recent" {{ 'selected' if sort=='recent' else '' }}>최신순</option>
+                                <option value="popular" {{ 'selected' if sort=='popular' else '' }}>인기순</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 오름차순 체크박스 -->
+                    <div class="flex items-center justify-between">
+                        <label class="text-sm font-medium text-gray-700">오름차순으로 정렬</label>
+                        <div class="flex items-center">
+                            <input type="checkbox"
+                                class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" {{ 'checked'
+                                if today_only else '' }}>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 모달 푸터 -->
+            <div class="px-6 py-4 bg-gray-50 rounded-b-lg flex justify-center space-x-3">
+                <button type="button"
+                    class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                    onclick="handleSearch()">
+                    확인
+                </button>
+                <button type="button"
+                    class="px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+                    onclick="handleCancel()">
+                    취소
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function handleSearch() {
+            // 검색 로직 - 서버로 폼 제출
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/main_search';
+
+            // 검색어
+            const searchInput = document.querySelector('input[type="text"]');
+            const searchField = document.createElement('input');
+            searchField.type = 'hidden';
+            searchField.name = 'query';
+            searchField.value = searchInput.value;
+            form.appendChild(searchField);
+
+            // 토픽
+            const topicSelect = document.querySelectorAll('select')[0];
+            const topicField = document.createElement('input');
+            topicField.type = 'hidden';
+            topicField.name = 'topic';
+            topicField.value = topicSelect.value;
+            form.appendChild(topicField);
+
+            // 정렬
+            const sortSelect = document.querySelectorAll('select')[1];
+            const sortField = document.createElement('input');
+            sortField.type = 'hidden';
+            sortField.name = 'sort';
+            sortField.value = sortSelect.value;
+            form.appendChild(sortField);
+
+            // 오름차순
+            const ascendingCheckbox = document.querySelector('input[type="checkbox"]');
+            const ascendingField = document.createElement('input');
+            ascendingField.type = 'hidden';
+            ascendingField.name = 'ascending';
+            ascendingField.value = ascendingCheckbox.checked ? 'true' : 'false';
+            form.appendChild(ascendingField);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        function handleCancel() {
+            // 취소 - 이전 페이지로 돌아가기 또는 모달 닫기
+            window.history.back();
+        }
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                handleCancel();
+            }
+        });
+
+        // 오버레이 클릭으로 모달 닫기
+        document.querySelector('.fixed').addEventListener('click', function (e) {
+            if (e.target === this) {
+                handleCancel();
+            }
+        });
+    </script>
+</body>
+
+</html>

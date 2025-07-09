@@ -1,11 +1,18 @@
+import os
+
+from bson import ObjectId
 from flask import current_app
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import jwt
 
-# JWT 관련 상수 설정
-SECRET_KEY = "HYEONGILSEUNGJUNJIHOON"
-EXPIRE_TIME = 15  # access token의 만료 기간 (분)
+from dotenv import load_dotenv
+
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+EXPIRE_TIME = int(os.getenv("EXPIRE_TIME"))
+
 
 def create_access_token(id):
     """
@@ -17,9 +24,10 @@ def create_access_token(id):
 
     payload = {
         "_id": str(id),  # ObjectId는 str로 변환.
-        "exp": datetime.now() + timedelta(minutes=EXPIRE_TIME),
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=EXPIRE_TIME),
     }
     return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+
 
 def auth_token(token):
     """
@@ -37,7 +45,7 @@ def auth_token(token):
 
     if not token:
         return False, "토큰이 없습니다."
-    
+
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         return True, payload["_id"]
@@ -45,3 +53,11 @@ def auth_token(token):
         return False, "토큰이 만료되었습니다."
     except jwt.InvalidTokenError:
         return False, "유효하지 않은 토큰입니다."
+
+
+def get_user_by_token(token):
+    payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+    db = current_app.config["DB"]
+    user_collection = db["users"]
+    user = user_collection.find_one({"_id": ObjectId(payload["_id"])}, {"password": 0})
+    return user
