@@ -1,5 +1,6 @@
 from email_validator import validate_email, EmailNotValidError
 
+
 def is_valid_email(email: str) -> bool:
     """
     이메일 형식을 검증하는 함수.
@@ -11,11 +12,13 @@ def is_valid_email(email: str) -> bool:
         bool: 유효한 형식이면 True, 아니면 False
     """
 
+
     try:
         valid = validate_email(email)
         return True, valid.normalized
     except EmailNotValidError:
         return False
+
 
 def is_valid_password(password: str) -> bool:
     """

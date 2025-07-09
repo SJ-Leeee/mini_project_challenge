@@ -5,6 +5,7 @@ from pymongo import MongoClient
 
 from app.config.default import Config
 
+
 from app.routes.user_routes import user_bp
 from app.routes.rendering_routes import rendering_bp
 from app.routes.challenge_routes import challenge_bp

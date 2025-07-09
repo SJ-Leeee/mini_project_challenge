@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+
 from app.utils.s3_func import upload_file_to_s3, delete_file_from_s3
 
 file_bp = Blueprint("file", __name__)
@@ -28,6 +29,7 @@ def delete_image():
 
     try:
         delete_file_from_s3(file_url)
+
         return jsonify({"message": "삭제 성공"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
