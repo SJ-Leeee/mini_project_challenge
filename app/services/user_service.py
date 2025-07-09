@@ -76,11 +76,19 @@ def log_in_user(email, password):
             - token (str or None): 로그인 성공 시 JWT access token, 실패 시 None
             - message (str): 처리 결과 메시지 (성공/실패 이유)
     """
-    
+
     if not is_valid_email(email):
-        return {"success": False, "data":{}, "message": "이메일 형식이 올바르지 않습니다."}
+        return {
+            "success": False,
+            "data": {},
+            "message": "이메일 형식이 올바르지 않습니다.",
+        }
     if not is_valid_password(password):
-        return {"success": False, "data":{}, "message": "비밀번호 형식이 올바르지 않습니다."}
+        return {
+            "success": False,
+            "data": {},
+            "message": "비밀번호 형식이 올바르지 않습니다.",
+        }
 
     db = current_app.config["DB"]
     user = db["users"].find_one({"email": email})

@@ -42,7 +42,7 @@ def get_one_record_by_id_service(record_id):
     return record
 
 
-def get_all_record_service(challenge_id):
+def get_all_record_by_challenge_id(challenge_id):
     records = get_all_record_model(challenge_id)
     return records
 
