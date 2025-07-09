@@ -49,6 +49,9 @@
 		        crossorigin="anonymous">
         </script>
 
+        {% block page_js %}
+        {% endblock %}
+
         <script>
             function open_loginmodal()
             {
@@ -106,10 +109,10 @@
                 $('#close_LoginModal_btn').on('click', close_loginmodal);
                 $('#login_Submit_btn').on('click', submit_login);
                 $('#mypage_btn').on('click', goto_mypage);
+
+                {% block add_ready_js %}
+                {% endblock %}
             });
         </script>
-
-        {% block page_js %}
-        {% endblock %}
     </body>
 </html>
