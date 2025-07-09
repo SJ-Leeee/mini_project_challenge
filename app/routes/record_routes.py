@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from app.services.auth_service import auth_token
 from app.services.record_service import (
     post_record_service,
-    get_all_record_service,
+    get_all_record_by_challenge_id,
     get_one_record_by_id_service,
     delete_record_service,
 )
@@ -69,7 +69,7 @@ def get_all_record():
     try:
         challenge_id = request.args.get("challenge_id")
 
-        result = get_all_record_service(challenge_id)
+        result = get_all_record_by_challenge_id(challenge_id)
         return jsonify(
             {
                 "success": True,

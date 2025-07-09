@@ -1,5 +1,6 @@
 import os
 
+from bson import ObjectId
 from flask import current_app
 from datetime import datetime, timedelta
 
@@ -52,3 +53,11 @@ def auth_token(token):
         return False, "토큰이 만료되었습니다."
     except jwt.InvalidTokenError:
         return False, "유효하지 않은 토큰입니다."
+
+
+def get_user_by_token(token):
+    payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+    db = current_app.config["DB"]
+    user_collection = db["users"]
+    user = user_collection.find_one({"_id": ObjectId(payload["_id"])}, {"password": 0})
+    return user
