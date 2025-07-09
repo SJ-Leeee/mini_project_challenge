@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from app.services.auth_service import auth_token
 from app.services.record_service import (
     post_record_service,
     get_all_record_service,
@@ -18,7 +19,9 @@ def post_record():
     try:
         record_data = request.get_json()
         challenge_id = request.args.get("challenge_id")
-        user_id = "686cd2b4fce5f626c62cad5a"
+        # token = challenge_data["token"]
+        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODZlNTE0MDk0YWY5NWIwNzBhYjFiOGMiLCJleHAiOjE3NTIxMTQ0NzZ9.YwjKMN8iDDvjTkbjt4Fr4_5TmMyc6qBcUEkkpBkGk9E"
+        _, user_id = auth_token(token)
 
         result = post_record_service(record_data, challenge_id, user_id)
         return jsonify(
@@ -43,7 +46,6 @@ def post_record():
 @record_bp.route("/<record_id>", methods=["GET"])
 def get_one_record_by_id(record_id):
     try:
-        # user_id = "686cd2b4fce5f626c62cad5a"
         result = get_one_record_by_id_service(record_id)
         return jsonify(
             {
@@ -66,8 +68,6 @@ def get_one_record_by_id(record_id):
 def get_all_record():
     try:
         challenge_id = request.args.get("challenge_id")
-        # user_id = "686cd2b4fce5f626c62cad5a"
-        print(challenge_id)
 
         result = get_all_record_service(challenge_id)
         return jsonify(
@@ -90,8 +90,9 @@ def get_all_record():
 @record_bp.route("/<record_id>", methods=["DELETE"])
 def delete_record(record_id):
     try:
-        user_id = "686cd2b4fce5f626c62cad5a"
-
+        # token = challenge_data["token"]
+        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODZlNTE0MDk0YWY5NWIwNzBhYjFiOGMiLCJleHAiOjE3NTIxMTQ0NzZ9.YwjKMN8iDDvjTkbjt4Fr4_5TmMyc6qBcUEkkpBkGk9E"
+        _, user_id = auth_token(token)
         delete_record_service(record_id, user_id)
 
         return jsonify(
