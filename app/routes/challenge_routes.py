@@ -20,7 +20,17 @@ def get_public_challenges():
         ChallengeSortType(int(sort))
         # 서비스 호출
         data = get_challenges_service(int(sort), is_public)
-        return data
+        return (
+            jsonify(
+                {
+                    "success": True,
+                    "data": data,
+                    "message": "데이터 조회에 성공하였습니다.",
+                }
+            ),
+            200,
+        )
+
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
 
@@ -32,7 +42,7 @@ def get_private_challenges():
     sort = request.args.get("sort", "1")  # 기본값 지정 = Optional
     is_public = False
     # user_id = get_current_user()
-    user_id = 1
+    user_id = "686cd2b4fce5f626c62cad5a"
 
     # 이부분에서 user_id없으면 Error
     if not user_id:
@@ -43,7 +53,7 @@ def get_private_challenges():
         ChallengeSortType(int(sort))
         # 서비스 호출
         data = get_challenges_service(int(sort), is_public, user_id)
-        return jsonify(data), 200
+        return jsonify({"data": data}), 200
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
 

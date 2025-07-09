@@ -24,6 +24,7 @@ def get_public_challenge_model(sort_type):
 
         for c in challenges:
             c["_id"] = str(c["_id"])
+            c["user_id"] = str(c["user_id"])
 
         return challenges
 
@@ -39,7 +40,7 @@ def get_private_challenge_model(sort_type, user_id):
 
         sort_type = ChallengeSortType(sort_type)  # ✅ Enum으로 변환
 
-        query = {"user_id": user_id, "is_public": False}
+        query = {"user_id": ObjectId(user_id), "is_public": False}
 
         if sort_type == ChallengeSortType.LIKE:
             challenges = list(challenge_collection.find(query).sort("like_count", -1))
@@ -52,6 +53,7 @@ def get_private_challenge_model(sort_type, user_id):
 
         for c in challenges:
             c["_id"] = str(c["_id"])
+            c["user_id"] = str(c["user_id"])
 
         return challenges
 

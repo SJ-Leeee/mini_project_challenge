@@ -4,6 +4,7 @@ from app.models.record_model import (
     get_record_by_challenge_id_with_today,
     get_all_record_model,
     get_one_record_by_id_model,
+    delete_record_model,
 )
 
 
@@ -36,16 +37,22 @@ def post_record_service(record_data, challenge_id, user_id):
 
 def get_one_record_by_id_service(record_id):
     record = get_one_record_by_id_model(record_id)
-    if not record:
-        raise ValueError("record is not exist")
     return record
 
 
 def get_all_record_service(challenge_id):
     records = get_all_record_model(challenge_id)
-    if not records:
-        raise ValueError("record is not exist")
     return records
+
+
+def delete_record_service(record_id):
+    record = get_one_record_by_id_model(record_id)
+    print(record)
+    if not record:
+        raise ValueError("record is not exist")
+
+    result = delete_record_model(record_id)
+    return result
 
 
 # def get_url_from_S3(data):

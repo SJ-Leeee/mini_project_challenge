@@ -21,6 +21,7 @@ def create_app():
     # config에서 설정파일 가져옴
     app.config.from_object(Config)
     client = MongoClient(app.config["MONGO_URI"])
+    print(app.config["MONGO_URI"])
     db = client.get_database()
     # app.config에 db정보 저장
     # 현재는 로컬의 test DB 사용중

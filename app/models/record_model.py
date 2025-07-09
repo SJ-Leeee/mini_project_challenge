@@ -89,3 +89,18 @@ def get_all_record_model(challenge_id):
     except Exception as e:
         # 데이터베이스 오류 또는 기타 예상치 못한 오류
         raise e
+
+
+def delete_record_model(record_id):
+    try:
+        db = current_app.config["DB"]
+        record_collection = db["record"]
+
+        query = {"_id": ObjectId(record_id)}
+
+        result = record_collection.delete_one(query)
+
+        return result
+    except Exception as e:
+        # 데이터베이스 오류 또는 기타 예상치 못한 오류
+        raise e
