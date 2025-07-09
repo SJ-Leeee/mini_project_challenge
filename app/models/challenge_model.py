@@ -75,7 +75,7 @@ def post_challenges_model(challenge_data, user_id):
             "topic": challenge_data["topic"],
             "challenge_count": count,
             "is_public": challenge_data["is_public"],
-            "user_id": user_id,
+            "user_id": ObjectId(user_id),
             "like_count": 0,
             "comment_count": 0,
             "start_date": today,  # 2025-07-08
@@ -85,13 +85,7 @@ def post_challenges_model(challenge_data, user_id):
         }
 
         result = challenge_collection.insert_one(challenge)
-        return {
-            "success": True,
-            "data": {
-                "challenge_id": str(result.inserted_id),
-            },
-            "message": "챌린지 등록이 되었습니다.",
-        }
+        return result
 
     except Exception as e:
         # 데이터베이스 오류 또는 기타 예상치 못한 오류

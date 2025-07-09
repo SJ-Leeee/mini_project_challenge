@@ -8,6 +8,7 @@ from app.config.default import Config
 from app.routes.user_routes import user_bp
 from app.routes.mainpage_routes import main_bp
 from app.routes.challenge_routes import challenge_bp
+from app.routes.record_routes import record_bp
 from datetime import datetime
 
 db = None
@@ -24,11 +25,10 @@ def create_app():
     # app.config에 db정보 저장
     # 현재는 로컬의 test DB 사용중
     app.config["DB"] = db
-    print(datetime.now())
-
-    # user.router에 있는 주소들 앞에 users 고정 역할
-    app.register_blueprint(user_bp, url_prefix="/api/users")
+    # url고정 및 라우트 등록
+    app.register_blueprint(user_bp, url_prefix="/api/user")
     app.register_blueprint(challenge_bp, url_prefix="/api/challenge")
+    app.register_blueprint(record_bp, url_prefix="/api/record")
 
     app.register_blueprint(main_bp)
 
