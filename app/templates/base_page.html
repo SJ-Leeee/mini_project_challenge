@@ -42,6 +42,7 @@
         </div>
 
         {% block main %}
+        
         {% endblock %}
 
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"
@@ -103,6 +104,8 @@
             function goto_mypage() {
                 window.location.href='/mypage.html';
             }
+
+            
 
             $(document).ready(function() {
                 $('#open_LoginModal_btn').on('click', open_loginmodal);

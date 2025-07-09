@@ -20,26 +20,17 @@
                     <div class="text-sm text-gray-600 mb-1">진행도</div>
                     <div class="flex items-center gap-4">
                         <div class="grid grid-cols-10 grid-rows-2 gap-px w-64">
-                            <div class="w-6 h-6 bg-green-400 border border-gray-300"></div>
-                            <div class="w-6 h-6 bg-green-400 border border-gray-300"></div>
-                            <div class="w-6 h-6 bg-green-400 border border-gray-300"></div>
-                            <div class="w-6 h-6 bg-green-400 border border-gray-300"></div>
-                            <div class="w-6 h-6 bg-green-300 border border-gray-300"></div>
-                            <div class="w-6 h-6 bg-green-300 border border-gray-300"></div>
-                            <div class="w-6 h-6 bg-green-300 border border-gray-300"></div>
-                            <div class="w-6 h-6 bg-green-300 border border-gray-300"></div>
-                            <div class="w-6 h-6 bg-green-300 border border-gray-300"></div>
-                            <div class="w-6 h-6 bg-green-300 border border-gray-300"></div>
-                            <div class="w-6 h-6 bg-white border border-gray-300"></div>
-                            <div class="w-6 h-6 bg-white border border-gray-300"></div>
-                            <div class="w-6 h-6 bg-white border border-gray-300"></div>
-                            <div class="w-6 h-6 bg-white border border-gray-300"></div>
-                            <div class="w-6 h-6 bg-white border border-gray-300"></div>
-                            <div class="w-6 h-6 bg-white border border-gray-300"></div>
-                            <div class="w-6 h-6 bg-white border border-gray-300"></div>
-                            <div class="w-6 h-6 bg-white border border-gray-300"></div>
-                            <div class="w-6 h-6 bg-white border border-gray-300"></div>
-                            <div class="w-6 h-6 bg-white border border-gray-300"></div>
+
+                            {% for i in range(20) %}
+                                <div class="w-6 h-6 border border-gray-300 
+                                    {% if true == recodes[i]['인증 여부'] %}
+                                        bg-green-400
+                                    {% else %}
+                                        bg-white
+                                    {% endif %}">
+                                </div>
+                            {% endfor %}
+
                         </div>
 
                         <div class="relative w-16 h-16 flex-shrink-0">
@@ -48,12 +39,12 @@
                                     class="stroke-current text-gray-200" stroke-width="10"></circle>
                                 <circle id="progressBar" cx="50" cy="50" r="45" fill="none" stroke="#10B981"
                                     class="stroke-current text-green-500" stroke-width="10" stroke-linecap="round"
-                                    stroke-dasharray="282.74" {# 2 * PI * 45 (원의 둘레) #} stroke-dashoffset="141.37" {#
-                                    예시: 50% 진행 (10/20) #}></circle>
+                                    stroke-dasharray="282.74" {# 2 * PI * 45 (원의 둘레) #} stroke-dashoffset="{{ cur_challenge_count/challenge_count }}">
+                                </circle>
                             </svg>
                             <div
                                 class="absolute inset-0 flex items-center justify-center text-sm font-semibold text-gray-700">
-                                10/20
+                                {{ cur_challenge_count }}/{{ challenge_count }}
                             </div>
                         </div>
 
@@ -71,8 +62,8 @@
                 </button>
 
                 <div class="text-sm text-gray-600 mt-2 text-right">
-                    <span class="font-medium">시작:</span> 2024.01.01<br>
-                    <span class="font-medium">종료:</span> 2024.12.31
+                    <span class="font-medium">시작:</span> {{ start_date }}<br>
+                    <span class="font-medium">종료:</span> {{ end_date }}
                 </div>
             </div>
 
@@ -80,24 +71,29 @@
     </a>
 
     <script>
-        function updateCircularProgressBar(current, total, elementId = 'progressBar', textElementSelector = '.absolute.inset-0.flex') {
-            const progressBar = document.getElementById(elementId);
+        function updateCircularProgressBar(current, total) {
+            let progressBar = $('#progressBar');
             if (!progressBar) return;
 
-            const percentage = total > 0 ? (current / total) : 0;
-            const circumference = 2 * Math.PI * 45; // r=45 (SVG circle의 r 값과 동일해야 함)
-            const offset = circumference * (1 - percentage);
+            let percentage;
+            if (total > 0)
+                percentage = current / total;
+            else
+                percentage = 0;
+            
+            let circumference = 2 * Math.PI * 45; // r=45 (SVG circle의 r 값과 동일해야 함)
+            let offset = circumference * (1 - percentage);
 
             progressBar.style.strokeDashoffset = offset;
 
-            const textElement = progressBar.parentElement.querySelector(textElementSelector);
+            let textElement = progressBar.parentElement.querySelector('.absolute.inset-0.flex');
             if (textElement) {
                 textElement.textContent = `${current}/${total}`;
             }
         }
 
         $(document).ready(function () {
-            updateCircularProgressBar(10, 20); // 초기값 설정 (50% 채워짐)
+            updateCircularProgressBar({{ cur_challenge_count }}, {{ challenge_count }}); // 초기값 설정 (50% 채워짐)
         });
     </script>
 </challenge_card>
