@@ -1,6 +1,8 @@
 from flask import current_app
 from app.models.user_model import insert_user, is_email_exist
 from app.services.auth_service import create_access_token
+from app.utils.validation_utils import is_valid_email, is_valid_password
+
 
 import bcrypt
 import jwt
@@ -33,6 +35,11 @@ def sign_up_user(data):
     email = data.get("email_give")
     password = data.get("password_give")
 
+    if is_valid_email(email):
+        return {"success": False, "data":{}, "message": "이메일 형식이 올바르지 않습니다."}
+    if is_valid_password(password):
+        return {"success": False, "data":{}, "message": "비밀번호 형식이 올바르지 않습니다."}
+
     if is_email_exist(email):
         return {"success": False, "data": {}, "message": "이미 존재하는 이메일입니다."}
 
@@ -61,6 +68,12 @@ def log_in_user(email, password):
             - token (str or None): 로그인 성공 시 JWT access token, 실패 시 None
             - message (str): 처리 결과 메시지 (성공/실패 이유)
     """
+    
+    if is_valid_email(email):
+        return {"success": False, "data":{}, "message": "이메일 형식이 올바르지 않습니다."}
+    if is_valid_password(password):
+        return {"success": False, "data":{}, "message": "비밀번호 형식이 올바르지 않습니다."}
+
     db = current_app.config["DB"]
     user = db["users"].find_one({"email": email})
 
