@@ -2,6 +2,8 @@ from app.models.record_model import (
     get_challenge_by_id_with_userId,
     post_record_model,
     get_record_by_challenge_id_with_today,
+    get_all_record_model,
+    get_one_record_by_id_model,
 )
 
 
@@ -30,6 +32,20 @@ def post_record_service(record_data, challenge_id, user_id):
     except Exception as e:
         # 데이터베이스 오류 또는 기타 예상치 못한 오류
         raise ValueError(f"{str(e)}")
+
+
+def get_one_record_by_id_service(record_id):
+    record = get_one_record_by_id_model(record_id)
+    if not record:
+        raise ValueError("record is not exist")
+    return record
+
+
+def get_all_record_service(challenge_id):
+    records = get_all_record_model(challenge_id)
+    if not records:
+        raise ValueError("record is not exist")
+    return records
 
 
 # def get_url_from_S3(data):
