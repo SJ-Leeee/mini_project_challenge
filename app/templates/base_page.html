@@ -85,7 +85,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "/log-in",
+                    url: "/api/user/log-in",
                     data: { email_give: email, password_give: password },
                     success: function(response) {
                         if (true == response["success"]) {

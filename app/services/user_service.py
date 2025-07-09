@@ -35,9 +35,9 @@ def sign_up_user(data):
     email = data.get("email_give")
     password = data.get("password_give")
 
-    if is_valid_email(email):
+    if not is_valid_email(email):
         return {"success": False, "data":{}, "message": "이메일 형식이 올바르지 않습니다."}
-    if is_valid_password(password):
+    if not is_valid_password(password):
         return {"success": False, "data":{}, "message": "비밀번호 형식이 올바르지 않습니다."}
 
     if is_email_exist(email):

@@ -35,6 +35,9 @@ def auth_token(token):
             - _id_or_message (str): _id 또는 에러 메시지
     """
 
+    if not token:
+        return False, "토큰이 없습니다."
+    
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         return True, payload["_id"]
