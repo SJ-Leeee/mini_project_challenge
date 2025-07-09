@@ -4,6 +4,7 @@ from app.services.challenge_service import (
     create_challenge_service,
     like_challenge_service,
 )
+from app.services.auth_service import auth_token
 from app.utils.enum.ChallengeSortTypeEnum import ChallengeSortType
 
 challenge_bp = Blueprint("challenge", __name__)
@@ -41,8 +42,9 @@ def get_public_challenges():
 def get_private_challenges():
     sort = request.args.get("sort", "1")  # 기본값 지정 = Optional
     is_public = False
-    # user_id = get_current_user()
-    user_id = "686cd2b4fce5f626c62cad5a"
+    # token = challenge_data["token"]
+    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODZlNTE0MDk0YWY5NWIwNzBhYjFiOGMiLCJleHAiOjE3NTIxMTQ0NzZ9.YwjKMN8iDDvjTkbjt4Fr4_5TmMyc6qBcUEkkpBkGk9E"
+    _, user_id = auth_token(token)
 
     # 이부분에서 user_id없으면 Error
     if not user_id:
@@ -64,8 +66,10 @@ def get_private_challenges():
 def post_challenge():
     # 기본적인 요청 형식 검증
     challenge_data = request.get_json()
-    # user_id = get_current_user()
-    user_id = "686cd2b4fce5f626c62cad5a"
+    # token = challenge_data["token"]
+    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODZlNTE0MDk0YWY5NWIwNzBhYjFiOGMiLCJleHAiOjE3NTIxMTQ0NzZ9.YwjKMN8iDDvjTkbjt4Fr4_5TmMyc6qBcUEkkpBkGk9E"
+    _, user_id = auth_token(token)
+
     # 이부분에서 user_id없으면 Error
     if not user_id:
         return jsonify({"error": "Authentication required"}), 401
@@ -91,8 +95,9 @@ def post_challenge():
 @challenge_bp.route("/like", methods=["PATCH"])
 def like_challenge():
     challenge_id = request.args.get("challenge_id")  # 기본값 지정 = Optional
-    # user_id = get_current_user()
-    user_id = "686cd2b4fce5f626c62cad5a"
+    # token = challenge_data["token"]
+    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODZlNTE0MDk0YWY5NWIwNzBhYjFiOGMiLCJleHAiOjE3NTIxMTQ0NzZ9.YwjKMN8iDDvjTkbjt4Fr4_5TmMyc6qBcUEkkpBkGk9E"
+    _, user_id = auth_token(token)
     # 이부분에서 user_id없으면 Error
     if not user_id or not challenge_id:
         return jsonify({"error": "Authentication or C22hallengeID required"}), 401
