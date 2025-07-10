@@ -486,7 +486,6 @@
   }
 
   function showEmptyState() {
-    alert('데이터가 존재하지 않습니다.');
     $('#records-grid').hide();
     $('#empty-state').show();
     $('#record-count').text('0');
@@ -509,10 +508,6 @@
     return `${month}월 ${day}일`;
   }
 
-  // $(document).ready(function () {
-    
-  // });
-
   // 초기 렌더링 (테스트용)
 </script>
 <!-- prettier-ignore -->
@@ -521,17 +516,12 @@
 
 {% block add_ready_js %}
 <!-- // 추가 초기화 코드가 필요한 경우 여기에 작성 -->
- // 페이지 로드 시 레코드 조회
-    loadRecords();
-
-    // 레코드 클릭 이벤트 (동적으로 추가되는 요소에 대한 이벤트 위임)
-    $(document).on('click', '.record-item', function () {
-      const recordId = $(this).data('record-id');
-      onRecordClick(recordId);
-    });
+<!-- prettier-ignore -->
+loadRecords(); // 레코드 클릭 이벤트 (동적으로 추가되는 요소에 대한이벤트 위임) 
+$(document).on('click', '.record-item', 
+function () { const recordId = $(this).data('record-id'); onRecordClick(recordId); }); 
 {% endblock %}
 
 <script>
   renderRecords();
 </script>
-

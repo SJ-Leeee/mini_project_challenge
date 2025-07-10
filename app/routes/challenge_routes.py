@@ -43,7 +43,7 @@ def get_private_challenges():
     sort = request.args.get("sort", "1")  # 기본값 지정 = Optional
     is_public = False
     # token = challenge_data["token"]
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODZlNTE0MDk0YWY5NWIwNzBhYjFiOGMiLCJleHAiOjE3NTIxMTQ0NzZ9.YwjKMN8iDDvjTkbjt4Fr4_5TmMyc6qBcUEkkpBkGk9E"
+    token = request.cookies.get("access_token")
     _, user_id = auth_token(token)
 
     # 이부분에서 user_id없으면 Error
@@ -67,7 +67,7 @@ def post_challenge():
     # 기본적인 요청 형식 검증
     challenge_data = request.get_json()
     # token = challenge_data["token"]
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODZlNTE0MDk0YWY5NWIwNzBhYjFiOGMiLCJleHAiOjE3NTIxMTQ0NzZ9.YwjKMN8iDDvjTkbjt4Fr4_5TmMyc6qBcUEkkpBkGk9E"
+    token = request.cookies.get("access_token")
     _, user_id = auth_token(token)
 
     # 이부분에서 user_id없으면 Error
@@ -96,7 +96,7 @@ def post_challenge():
 def like_challenge():
     challenge_id = request.args.get("challenge_id")  # 기본값 지정 = Optional
     # token = challenge_data["token"]
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODZlNTE0MDk0YWY5NWIwNzBhYjFiOGMiLCJleHAiOjE3NTIxMTQ0NzZ9.YwjKMN8iDDvjTkbjt4Fr4_5TmMyc6qBcUEkkpBkGk9E"
+    token = request.cookies.get("access_token")
     _, user_id = auth_token(token)
     # 이부분에서 user_id없으면 Error
     if not user_id or not challenge_id:

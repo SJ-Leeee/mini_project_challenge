@@ -78,17 +78,17 @@ def log_in_user(email, password):
     """
 
     if not is_valid_email(email):
-        return {
-            "success": False,
-            "data": {},
-            "message": "이메일 형식이 올바르지 않습니다.",
-        }
+        return (
+            False,
+            "",
+            "이메일 형식이 올바르지 않습니다.",
+        )
     if not is_valid_password(password):
-        return {
-            "success": False,
-            "data": {},
-            "message": "비밀번호 형식이 올바르지 않습니다.",
-        }
+        (
+            False,
+            "",
+            "비밀번호 형식이 올바르지 않습니다.",
+        )
 
     db = current_app.config["DB"]
     user = db["users"].find_one({"email": email})

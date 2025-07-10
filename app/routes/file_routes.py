@@ -28,7 +28,7 @@ def delete_image():
         return jsonify({"error": "file_url required"}), 400
 
     try:
-        delete_file_from_s3(file_url)
+        delete_s3_file_by_url(file_url)
 
         return jsonify({"message": "삭제 성공"}), 200
     except Exception as e:
