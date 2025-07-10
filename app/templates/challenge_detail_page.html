@@ -281,11 +281,18 @@
   </div>
 </div>
 {% endblock %} {% block page_js %}
+
 <script>
   let currentChallengeId = '{{ challenge_id }}';
   let challengeCount = '{{ challenge_count }}'; // 전체 개수
   let startDate = '{{ start_date }}'; // "Wed, 09 Jul 2025 16:05:32 GMT"
   let endDate = '{{ end_date }}';
+  let error = '{{ error }}';
+  if (error) {
+    console.log('dd');
+    alert(error);
+    window.location.href = '/'; // 메인 페이지로 리다이렉트
+  }
 
   let recordsData = [
     {
@@ -318,7 +325,6 @@
       data: { challenge_id: currentChallengeId },
       success: function (response) {
         if (response.success) {
-          console.log('하이루');
           recordsData = response.data;
           renderRecords();
         } else {
@@ -480,6 +486,7 @@
   }
 
   function showEmptyState() {
+    alert('데이터가 존재하지 않습니다.');
     $('#records-grid').hide();
     $('#empty-state').show();
     $('#record-count').text('0');
@@ -514,7 +521,6 @@
   });
 
   // 초기 렌더링 (테스트용)
-  renderRecords();
 </script>
 <!-- prettier-ignore -->
 
