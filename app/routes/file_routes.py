@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 
-from app.utils.s3_func import upload_file_to_s3, delete_file_from_s3
+from app.utils.s3_func import upload_file_to_s3, delete_s3_file_by_url
 
 file_bp = Blueprint("file", __name__)
 
