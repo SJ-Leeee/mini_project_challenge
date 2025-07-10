@@ -1,0 +1,96 @@
+{% extends "base_page.html" %}
+
+{% block title %}ChallengeMe | 회원가입{% endblock %}
+
+{% block page_css %}
+{% endblock %}
+
+{% block header %}
+{% include 'navigation_bar.html' %}
+{% endblock %}
+
+{% block main %}
+<div class="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+    <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">회원가입</h2>
+
+        <div class="mb-5">
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">이메일 주소</label>
+            <input type="email" id="register_email" name="email" placeholder="email@example.com" required
+                class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-base transition duration-150 ease-in-out">
+        </div>
+
+        <div class="mb-5">
+            <label for="nickname" class="block text-sm font-medium text-gray-700 mb-2">닉네임</label>
+            <input type="text" id="register_nickname" name="nickname" placeholder="멋진 닉네임을 입력하세요" required
+                class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-base transition duration-150 ease-in-out">
+        </div>
+
+        <div class="mb-5">
+            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">비밀번호</label>
+            <input type="password" id="register_password" name="password" placeholder="비밀번호 (8자 이상)" required minlength="8"
+                class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-base transition duration-150 ease-in-out">
+        </div>
+
+        <div class="mb-6">
+            <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-2">비밀번호 확인</label>
+            <input type="password" id="register_confirm_password" name="confirm_password" placeholder="비밀번호를 다시 입력하세요" required
+                class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-base transition duration-150 ease-in-out">
+            <p id="password_match_status" class="mt-2 text-sm text-red-600 hidden">비밀번호가 일치하지 않습니다.</p>
+        </div>
+
+        <button id="submit_register_btn"
+            class="w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 text-lg">
+            가입하기
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script>
+    function submit_register() {
+        let email = $("#register_email").val();
+        let password = $("#register_password").val();
+        let nickname = $("#register_nickname").val();
+
+        // 유효성 검사 우선 빈 값 확인으로 구현. 이메일 형식 확인, 비밀번호 강도 같은 방법도 있음.
+        if ('' === email) {
+            alert("아이디(이메일)를 입력해주세요.");
+            return false;
+        }
+
+        if ('' === password) {
+            alert("비밀번호를 입력해주세요.");
+            return false;
+        }
+
+        if ('' === nickname) {
+            alert("닉네임을 입력해주세요.");
+            return false;
+        }
+
+        if ($("#register_confirm_password").val() != password) {
+            alert("비밀번호가 일치하지 않습니다.");
+            return false;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/api/user/sign-up",
+            data: { email_give: email, password_give: password, nickname_give: nickname },
+            success: function (response) {
+                alert(response["message"]);
+
+                if (true == response["success"]) {
+                    window.location.href = "/";
+                }
+            }
+        })
+    }
+</script>
+{% endblock %}
+
+{% block add_ready_js %}
+$('#submit_register_btn').on('click', submit_register);
+{% endblock %}

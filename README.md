@@ -186,8 +186,6 @@ pip install -r requirements.txt
 
 • PR → 리뷰 → 머지
 
-• 팀에서 아래 중 하나로 통일
-
 ---
 
 ### ✅ 5. 충돌 해결

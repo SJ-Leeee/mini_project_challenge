@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>챌린지 인증 모달</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <!-- 모달 오버레이 -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <!-- 모달 컨테이너 -->
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-lg">
+            <!-- 모달 헤더 -->
+            <div class="flex justify-between items-center p-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-800">챌린지 인증 페이지</h2>
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-500"> {{ nickname }} 님</span>
+                    <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                        <svg class="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 모달 본문 -->
+            <div class="p-6 space-y-6">
+                <!-- 사진 업로드 섹션 -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">사진</label>
+                    <div class="flex items-center space-x-3">
+                        <input type="text" id="photoInput"
+                            class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="사진을 선택하세요" readonly>
+                        <button type="button" id="photoButton"
+                            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors">
+                            찾아보기
+                        </button>
+                    </div>
+
+                    <!-- 숨겨진 파일 입력 -->
+                    <input type="file" id="fileInput" accept="image/*" class="hidden">
+
+                    <!-- 이미지 미리보기 -->
+                    <div id="imagePreview" class="mt-3 hidden">
+                        <img id="previewImg" class="w-full h-48 object-cover rounded-md border border-gray-300"
+                            alt="미리보기">
+                    </div>
+                </div>
+
+                <!-- 코멘트 섹션 -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">코멘트</label>
+                    <textarea id="commentInput" rows="6"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                        placeholder="챌린지에 대한 설명을 작성해주세요."></textarea>
+                </div>
+            </div>
+
+            <!-- 모달 푸터 -->
+            <div class="px-6 py-4 bg-gray-50 rounded-b-lg flex justify-end">
+                <button type="button" id="submitBtn"
+                    class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                    onclick="handleSubmit()">
+                    인증
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 파일 입력 처리
+        const fileInput = document.getElementById('fileInput');
+        const photoButton = document.getElementById('photoButton');
+        const photoInput = document.getElementById('photoInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        const commentInput = document.getElementById('commentInput');
+
+
+        // 찾아보기 버튼 클릭 시
+        photoButton.addEventListener('click', function () {
+            fileInput.click();
+        });
+
+        // 파일 선택 시
+        fileInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                // 파일명 표시
+                photoInput.value = file.name;
+
+                // 이미지 미리보기
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImg.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 인증 버튼 클릭 처리
+        async function handleSubmit() {
+            const file = fileInput.files[0];
+            const comment = commentInput.value.trim();
+
+            // 유효성 검사
+            if (!file) {
+                alert('사진을 선택해주세요.');
+                return;
+            }
+
+            if (!comment) {
+                alert('코멘트를 입력해주세요.');
+                return;
+            }
+
+            try {
+                // 폼 데이터 생성
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('comment', comment);
+
+                // 디버그 로그
+                // console.log('인증 데이터:', {
+                //     photo: file.name,
+                //     comment: comment,
+                //     fileSize: file.size,
+                //     fileType: file.type
+                // });
+
+                // 서버로 전송
+                // const response = await fetch('/file', {
+                //     method: 'POST',
+                //     body: formData
+                // });
+
+                const response = await fetch('/api/file', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                console.log(response)
+
+                const responseData = await response.json();
+                // console.log(responseData.url)
+
+                if (response.ok && responseData.success) {
+                    console.log(responseData.url)
+                    // 성공 처리
+                    // TODO: 레코드 생성 api 호출
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/record';
+
+                    const recordField = document.createElement('input');
+                    // recordField.challenge_id = {{ challenge_id }}
+                    recordField.url = responseData.url
+                    recordField.comment = comment
+                    form.appendChild(recordField)
+
+                    form.submit()
+
+                    // 성공 메시지 표시
+                    setTimeout(() => {
+                        alert('챌린지 인증이 완료되었습니다!');
+                        handleClose();
+                    }, 1000);
+
+                } else {
+                    // 서버 오류 처리
+                    throw new Error(responseData.error || '파일 업로드에 실패했습니다.');
+                }
+
+            } catch (error) {
+                console.error('업로드 오류:', error);
+
+                // 에러 처리
+                // 에러 alert
+                alert('업로드에 실패했습니다: ' + error.message);
+
+            } finally {
+                //window.location.href = "/";
+            }
+        }
+
+        // URL 복사 함수
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('URL이 클립보드에 복사되었습니다!');
+            }).catch(err => {
+                console.error('복사 실패:', err);
+                // 폴백: 텍스트 선택
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    alert('URL이 클립보드에 복사되었습니다!');
+                } catch (err) {
+                    alert('복사에 실패했습니다. URL을 수동으로 복사해주세요.');
+                }
+                document.body.removeChild(textArea);
+            });
+        }
+
+
+        // 모달 닫기
+        function handleClose() {
+            window.history.back();
+        }
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                handleClose();
+            }
+        });
+
+        // 오버레이 클릭으로 모달 닫기
+        document.querySelector('.fixed').addEventListener('click', function (e) {
+            if (e.target === this) {
+                handleClose();
+            }
+        });
+
+        // 드래그 앤 드롭 기능
+        const photoSection = document.querySelector('div:has(#photoInput)');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            photoSection.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            photoSection.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            photoSection.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            photoSection.classList.add('border-blue-500', 'bg-blue-50');
+        }
+
+        function unhighlight(e) {
+            photoSection.classList.remove('border-blue-500', 'bg-blue-50');
+        }
+
+        // 드롭 처리
+        photoSection.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type.startsWith('image/')) {
+                    fileInput.files = files;
+
+                    // 수동으로 change 이벤트 발생
+                    const event = new Event('change');
+                    fileInput.dispatchEvent(event);
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
