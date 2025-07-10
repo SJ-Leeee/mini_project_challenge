@@ -105,11 +105,16 @@
                 window.location.href='/my_page';
             }
 
+            function make_challenge() {
+                window.location.href='/make_challenge';
+            }
+
             $(document).ready(function() {
                 $('#open_LoginModal_btn').on('click', open_loginmodal);
                 $('#close_LoginModal_btn').on('click', close_loginmodal);
                 $('#login_Submit_btn').on('click', submit_login);
                 $('#mypage_btn').on('click', goto_mypage);
+                $('#create_challenge_btn').on('click', make_challenge);
 
                 {% block add_ready_js %}
                 {% endblock %}
