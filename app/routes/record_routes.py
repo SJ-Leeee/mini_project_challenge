@@ -19,8 +19,8 @@ def post_record():
     try:
         record_data = request.get_json()
         challenge_id = request.args.get("challenge_id")
-        # token = challenge_data["token"]
-        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODZlNTE0MDk0YWY5NWIwNzBhYjFiOGMiLCJleHAiOjE3NTIxMTQ0NzZ9.YwjKMN8iDDvjTkbjt4Fr4_5TmMyc6qBcUEkkpBkGk9E"
+        token = request.cookies.get["access_token"]
+
         _, user_id = auth_token(token)
 
         result = post_record_service(record_data, challenge_id, user_id)

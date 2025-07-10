@@ -85,6 +85,14 @@ def render_challenge_detail(challenge_id):
         token = request.cookies.get("access_token")
         # 서비스 함수를 통해 챌린지 정보 조회
         challenge_info = get_challenge_by_id(challenge_id)
+        if not challenge_info:
+            return (
+                render_template(
+                    "challenge_detail_page.html", error="존재하지 않는 챌린지입니다."
+                ),
+                404,
+            )
+
         # 현재 사용자 정보 (세션에서 가져오거나 토큰에서 추출)
         current_user = get_user_by_token(token)
         start_date_str = challenge_info["start_date"].strftime("%Y-%m-%d")
