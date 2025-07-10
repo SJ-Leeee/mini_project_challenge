@@ -1,6 +1,7 @@
 from bson import ObjectId
 from flask import Blueprint, request, jsonify, current_app, render_template
 from datetime import datetime, timedelta, date
+from app.utils.enum.TopicTypeEnum import TopicType
 from app.services.auth_service import (
     auth_token,
     get_user_by_token,
@@ -14,7 +15,6 @@ from app.services.record_service import (
 from app.models.challenge_model import (
     get_challenge_by_id,
 )
-
 
 rendering_bp = Blueprint("rendering", __name__)
 
@@ -319,4 +319,25 @@ def mypage_search():
         topic=topic,
         sort=sort,
         ascending=ascending,
+    )
+
+@rendering_bp.route("/make_challenge", methods=["GET"])
+def make_challenge():
+    token = request.cookies.get("access_token")
+    is_valid, _id = auth_token(token)
+
+    if not is_valid:
+        render_template("main_page.html", mesage=result)
+    
+    db = current_app.config["DB"]
+    user = db["users"].find_one({"_id":ObjectId(_id)})
+
+    current_user = user["nickname"]
+
+    topic_list = [topic.name for topic in TopicType]
+
+    return render_template(
+        "make_challenge.html",
+        current_user_nickname=current_user,
+        topics=topic_list,
     )

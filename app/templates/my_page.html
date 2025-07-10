@@ -26,6 +26,26 @@ block main %}
     </button>
   </div>
 
+  {% block main %}
+<div class="mt-20">
+    <div class="max-w-4xl mx-auto flex justify-between items-center mb-6 px-4 sm:px-0 w-full">
+        
+        <h2 class="text-2xl font-bold text-gray-800">나만의 챌린지</h2>
+        
+        <div class="flex items-center space-x-2">
+            {% if current_user_nickname %}
+            <button id="create_challenge_btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full shadow-md transition-colors duration-200 focus:outline-none">
+                챌린지 작성
+            </button>
+            {% endif %}
+            <button id="my_modal_btn" class="text-gray-500 hover:text-blue-500 transition-colors duration-200 focus:outline-none p-2 rounded-full bg-white shadow-md">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
   {% for card_data in card_datas %}
   <div
     class="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden flex relative mb-4 {% if not card_data['public'] %}border-4 border-blue-300{% endif %}"
@@ -41,7 +61,6 @@ block main %}
           alt="https://i.pinimg.com/736x/06/8c/ed/068ced34c7a9cae1ba26ea1ffc78a6b6.jpg"
         />
       </div>
-    </div>
 
     <div class="flex-1 py-6 pr-6 pl-6 flex flex-col justify-center">
       <div class="mb-4">
