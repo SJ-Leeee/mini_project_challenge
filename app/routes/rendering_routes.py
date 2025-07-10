@@ -50,7 +50,7 @@ def main():
 def signup():
     return render_template('signup_page.html')
 
-@rendering_bp.route("/mypage", methods=["GET"])
+@rendering_bp.route("/my_page", methods=["GET"])
 def mypage():
     token = request.cookies.get("access_token")
     is_valid, _id = auth_token(token)
@@ -77,7 +77,7 @@ def mypage():
             "days_until_end": (challenge['end_date'] - datetime.now()).days,
         })
 
-    return render_template('mypage.html', current_user_nickname=current_user, card_datas=results)
+    return render_template('my_page.html', current_user_nickname=current_user, card_datas=results)
 
 @rendering_bp.route("/challenge/<challenge_id>", methods=["GET"])
 def render_challenge_detail(challenge_id):
