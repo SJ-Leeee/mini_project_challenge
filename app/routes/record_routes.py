@@ -69,9 +69,9 @@ def get_all_record():
     try:
         challenge_id = request.args.get("challenge_id")
 
-
         result = get_all_record_by_challenge_id(challenge_id)
 
+        result.sort(key=lambda r: int(r.get("created_date", 0)), reverse=True)
         return jsonify(
             {
                 "success": True,
@@ -93,7 +93,7 @@ def get_all_record():
 def delete_record(record_id):
     try:
         # token = challenge_data["token"]
-        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODZlNTE0MDk0YWY5NWIwNzBhYjFiOGMiLCJleHAiOjE3NTIxMTQ0NzZ9.YwjKMN8iDDvjTkbjt4Fr4_5TmMyc6qBcUEkkpBkGk9E"
+        token = request.cookies.get("access_token")
         _, user_id = auth_token(token)
         delete_record_service(record_id, user_id)
 

@@ -32,13 +32,13 @@ def log_in():
 
     # jwt 토큰
     if not success:
-        return jsonify({"success": False, "data": {}, "message": message})
+        return jsonify({"success": False, "data": {}, "message": message}), 400
 
     response = make_response(
         jsonify(
             {
                 "success": True,
-                "data": {},
+                "data": token,
                 "message": "로그인 성공",
             }
         )
