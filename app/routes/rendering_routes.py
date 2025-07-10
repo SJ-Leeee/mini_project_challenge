@@ -1,34 +1,83 @@
+from bson import ObjectId
 from flask import Blueprint, request, jsonify, current_app, render_template
-from jwt import decode, ExpiredSignatureError
-from app.services.challenge_service import get_challenges_service
-from app.services.auth_service import auth_token
-from datetime import datetime
+from datetime import datetime, timedelta, date
+from app.services.auth_service import (
+    auth_token,
+    get_user_by_token,
+)
+from app.services.challenge_service import (
+    get_challenges_service,
+)
+from app.services.record_service import (
+    get_all_record_by_challenge_id,
+)
+from app.models.challenge_model import (
+    get_challenge_by_id,
+)
 
-from app.models.challenge_model import get_challenge_by_id
-from app.services.auth_service import get_user_by_token
 
 rendering_bp = Blueprint("rendering", __name__)
 
-
 @rendering_bp.route("/", methods=["GET"])
 def main():
-    testuser = None
-    # testuser="aaa"
+    token = request.cookies.get("access_token")
+    is_valid, _id = auth_token(token)
 
-    return render_template("main_page.html", current_user_nickname=testuser)
+    current_user = None
 
+    if is_valid:
+        db = current_app.config["DB"]
+        user = db["users"].find_one({"_id":ObjectId(_id)})
+
+        current_user = user["nickname"]
+    
+    data = get_challenges_service(0, True)
+    results = []
+
+    for challenge in data:
+        results.append({
+            "id": challenge['_id'],
+            "public": challenge['is_public'],
+            "title": challenge['title'],
+            "likes": challenge['like_count'],
+            "days_from_start": (datetime.now() - challenge['start_date']).days,
+            "days_until_end": (challenge['end_date'] - datetime.now()).days,
+        })
+        
+    return render_template('main_page.html', current_user_nickname=current_user, card_datas=results)
 
 @rendering_bp.route("/register", methods=["GET"])
 def signup():
-    return render_template("signup_page.html")
+    return render_template('signup_page.html')
 
-
-@rendering_bp.route("/mypage", methods=["GET"])
+@rendering_bp.route("/my_page", methods=["GET"])
 def mypage():
-    # 유저 정보를 얻어와야 함 (token?)
-    # 토큰을 넘기고 mypage.html에서 서버로 private challenge 정보 요청
+    token = request.cookies.get("access_token")
+    is_valid, _id = auth_token(token)
 
-    return render_template("mypage.html")
+    if not is_valid:
+        render_template("main_page.html", message=_id)
+        
+    db = current_app.config["DB"]
+    user = db["users"].find_one({"_id":ObjectId(_id)})
+
+    current_user_id = user["_id"]
+    current_user = user["nickname"]
+
+    data = get_challenges_service(0, False, current_user_id)
+    results = []
+
+    for challenge in data:
+        results.append({
+            "id": challenge['_id'],
+            "public": challenge['is_public'],
+            "title": challenge['title'],
+            "likes": challenge['like_count'],
+            "days_from_start": (datetime.now() - challenge['start_date']).days,
+            "days_until_end": (challenge['end_date'] - datetime.now()).days,
+        })
+
+    return render_template('my_page.html', current_user_nickname=current_user, card_datas=results)
 
 @rendering_bp.route("/challenge/<challenge_id>", methods=["GET"])
 def render_challenge_detail(challenge_id):
@@ -79,7 +128,6 @@ def main_modal():
         ascending=ascending == "false",
     )
 
-
 @rendering_bp.route("/main_search", methods=["GET", "POST"])
 def main_search():
     search_query = request.form.get("query", "").strip()
@@ -113,16 +161,18 @@ def main_search():
 
         results.append(
             {
-                "title": item["title"],
-                "likes": item["like_count"],
+                "id": item['_id'],
+                "public": item['is_public'],
+                "title": item['title'],
+                "likes": item['like_count'],
                 "days_from_start": days_from_start,
                 "days_until_end": days_until_end,
             }
         )
 
     return render_template(
-        "main_search_result.html",
-        results=results,
+        "main_page.html",
+        card_datas=results,
         query=search_query,
         topic=topic,
         sort=sort,
@@ -189,7 +239,6 @@ def mypage_modal():
         ascending=ascending == "false",
         private=private == "false",
     )
-
 
 @rendering_bp.route("/mypage_search", methods=["GET", "POST"])
 def mypage_search():
