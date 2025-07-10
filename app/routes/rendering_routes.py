@@ -18,6 +18,7 @@ from app.models.challenge_model import (
 
 rendering_bp = Blueprint("rendering", __name__)
 
+
 @rendering_bp.route("/", methods=["GET"])
 def main():
     token = request.cookies.get("access_token")
@@ -27,28 +28,35 @@ def main():
 
     if is_valid:
         db = current_app.config["DB"]
-        user = db["users"].find_one({"_id":ObjectId(_id)})
+        user = db["users"].find_one({"_id": ObjectId(_id)})
 
         current_user = user["nickname"]
-    
+
     data = get_challenges_service(0, True)
     results = []
 
     for challenge in data:
-        results.append({
-            "id": challenge['_id'],
-            "public": challenge['is_public'],
-            "title": challenge['title'],
-            "likes": challenge['like_count'],
-            "days_from_start": (datetime.now() - challenge['start_date']).days,
-            "days_until_end": (challenge['end_date'] - datetime.now()).days,
-        })
-        
-    return render_template('main_page.html', current_user_nickname=current_user, card_datas=results)
+        results.append(
+            {
+                "id": challenge["_id"],
+                "public": challenge["is_public"],
+                "title": challenge["title"],
+                "likes": challenge["like_count"],
+                "days_from_start": (datetime.now() - challenge["start_date"]).days,
+                "days_until_end": (challenge["end_date"] - datetime.now()).days,
+                "photo_url": challenge.get("photo_url", ""),
+            }
+        )
+
+    return render_template(
+        "main_page.html", current_user_nickname=current_user, card_datas=results
+    )
+
 
 @rendering_bp.route("/register", methods=["GET"])
 def signup():
-    return render_template('signup_page.html')
+    return render_template("signup_page.html")
+
 
 @rendering_bp.route("/my_page", methods=["GET"])
 def mypage():
@@ -57,9 +65,9 @@ def mypage():
 
     if not is_valid:
         render_template("main_page.html", message=_id)
-        
+
     db = current_app.config["DB"]
-    user = db["users"].find_one({"_id":ObjectId(_id)})
+    user = db["users"].find_one({"_id": ObjectId(_id)})
 
     current_user_id = user["_id"]
     current_user = user["nickname"]
@@ -68,16 +76,22 @@ def mypage():
     results = []
 
     for challenge in data:
-        results.append({
-            "id": challenge['_id'],
-            "public": challenge['is_public'],
-            "title": challenge['title'],
-            "likes": challenge['like_count'],
-            "days_from_start": (datetime.now() - challenge['start_date']).days,
-            "days_until_end": (challenge['end_date'] - datetime.now()).days,
-        })
+        results.append(
+            {
+                "id": challenge["_id"],
+                "public": challenge["is_public"],
+                "title": challenge["title"],
+                "likes": challenge["like_count"],
+                "days_from_start": (datetime.now() - challenge["start_date"]).days,
+                "days_until_end": (challenge["end_date"] - datetime.now()).days,
+                "photo_url": challenge.get("photo_url", ""),
+            }
+        )
 
-    return render_template('my_page.html', current_user_nickname=current_user, card_datas=results)
+    return render_template(
+        "my_page.html", current_user_nickname=current_user, card_datas=results
+    )
+
 
 @rendering_bp.route("/challenge/<challenge_id>", methods=["GET"])
 def render_challenge_detail(challenge_id):
@@ -111,6 +125,7 @@ def render_challenge_detail(challenge_id):
         print(str(e))
         return render_template("main_page.html", error="챌린지를 찾을 수 없습니다.")
 
+
 @rendering_bp.route("/main_modal", methods=["GET"])
 def main_modal():
     """검색 모달 페이지"""
@@ -127,6 +142,7 @@ def main_modal():
         sort=sort,
         ascending=ascending == "false",
     )
+
 
 @rendering_bp.route("/main_search", methods=["GET", "POST"])
 def main_search():
@@ -161,10 +177,10 @@ def main_search():
 
         results.append(
             {
-                "id": item['_id'],
-                "public": item['is_public'],
-                "title": item['title'],
-                "likes": item['like_count'],
+                "id": item["_id"],
+                "public": item["is_public"],
+                "title": item["title"],
+                "likes": item["like_count"],
                 "days_from_start": days_from_start,
                 "days_until_end": days_until_end,
             }
@@ -180,7 +196,7 @@ def main_search():
     )
 
 
-def perform_search(query, topic, sort, ascending, private = True, user_id = None):
+def perform_search(query, topic, sort, ascending, private=True, user_id=None):
     print("perform_search()")
     # public challenge만 취합
     # sort 값에 따라 최신순, 좋아요 순 정렬
@@ -240,6 +256,7 @@ def mypage_modal():
         private=private == "false",
     )
 
+
 @rendering_bp.route("/mypage_search", methods=["GET", "POST"])
 def mypage_search():
     token = request.cookies.get("access_token")
@@ -270,8 +287,10 @@ def mypage_search():
         sort = "recent"
 
     # 검색 로직 수행
-    if private == 'true':
-        search_results = perform_search(search_query, topic, sort, ascending, False, user_id)
+    if private == "true":
+        search_results = perform_search(
+            search_query, topic, sort, ascending, False, user_id
+        )
     else:
         search_results = perform_search(search_query, topic, sort, ascending)
     print(search_results)
