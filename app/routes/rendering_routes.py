@@ -322,3 +322,9 @@ def make_challenge():
         current_user_nickname=current_user,
         topics=topic_list,
     )
+
+
+@rendering_bp.route("/photo_auth_modal", methods=["GET"])
+def photo_auth_modal():
+    nickname = "형일"
+    return render_template("challenge_auth.html", nickname=nickname)
