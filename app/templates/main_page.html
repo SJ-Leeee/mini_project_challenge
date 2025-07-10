@@ -11,20 +11,16 @@
 
 {% block main %}
 <div class="mt-20">
-    {# --- 수정된 부분 시작 --- #}
-    {# w-full 클래스 추가로 전체 너비 확보 #}
     <div class="max-w-4xl mx-auto flex justify-between items-center mb-6 px-4 sm:px-0 w-full">
-        {# "모두의 챌린지" 멘트 #}
+        
         <h2 class="text-2xl font-bold text-gray-800">모두의 챌린지</h2>
         
-        {# 돋보기 버튼 #}
-        <button class="text-gray-500 hover:text-blue-500 transition-colors duration-200 focus:outline-none p-2 rounded-full bg-white shadow-md">
+        <button id="main_modal_btn" class="text-gray-500 hover:text-blue-500 transition-colors duration-200 focus:outline-none p-2 rounded-full bg-white shadow-md">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
         </button>
     </div>
-    {# --- 수정된 부분 끝 --- #}
 
     {% for card_data in card_datas %}
     <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden flex relative mb-4 {% if not card_data['public'] %}border-4 border-blue-300{% endif %}">
@@ -65,7 +61,13 @@
 {% endblock %}
 
 {% block page_js %}
+<script>
+    function goto_mainmodal() {
+        window.location.href='/main_modal';
+    }
+</script>
 {% endblock %}
 
 {% block add_ready_js %}
+$('#main_modal_btn').on('click', goto_mainmodal);
 {% endblock %}
