@@ -80,6 +80,7 @@ def post_challenges_model(challenge_data, user_id):
             "user_id": ObjectId(user_id),
             "like_count": 0,
             "comment_count": 0,
+            "photo_url": challenge_data.get("photo_url", ""),
             "start_date": today,  # 2025-07-08
             "end_date": end_date,  # 2025-08-01
             "created_at": datetime.now(),
