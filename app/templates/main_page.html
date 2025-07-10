@@ -1,73 +1,81 @@
-{% extends "base_page.html" %}
-
-{% block title %}ChallengeMe{% endblock %}
-
-{% block page_css %}
-{% endblock %}
-
-{% block header %}
-{% include 'navigation_bar.html' %}
-{% endblock %}
-
-{% block main %}
+{% extends "base_page.html" %} {% block title %}ChallengeMe{% endblock %} {% block page_css %} {%
+endblock %} {% block header %} {% include 'navigation_bar.html' %} {% endblock %} {% block main %}
 <div class="mt-20">
-    <div class="max-w-4xl mx-auto flex justify-between items-center mb-6 px-4 sm:px-0 w-full">
-        
-        <h2 class="text-2xl font-bold text-gray-800">모두의 챌린지</h2>
-        
-        <button id="main_modal_btn" class="text-gray-500 hover:text-blue-500 transition-colors duration-200 focus:outline-none p-2 rounded-full bg-white shadow-md">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
-        </button>
+  <div class="max-w-4xl mx-auto flex justify-between items-center mb-6 px-4 sm:px-0 w-full">
+    <h2 class="text-2xl font-bold text-gray-800">모두의 챌린지</h2>
+
+    <button
+      id="main_modal_btn"
+      class="text-gray-500 hover:text-blue-500 transition-colors duration-200 focus:outline-none p-2 rounded-full bg-white shadow-md"
+    >
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        ></path>
+      </svg>
+    </button>
+  </div>
+
+  {% for card_data in card_datas %}
+  <div
+    class="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden flex relative mb-4 {% if not card_data['public'] %}border-4 border-blue-300{% endif %}"
+  >
+    <a href="/challenge/{{ card_data['id'] }}" class="absolute inset-0 z-10"></a>
+    <div class="p-4 flex items-center justify-center flex-shrink-0">
+      <div
+        class="w-48 h-48 bg-gray-200 rounded-md flex items-center justify-center overflow-hidden"
+      >
+        <img
+          class="w-full h-full object-cover rounded-md"
+          src='{{ card_data["photo_url"] }}'
+          alt="https://i.pinimg.com/736x/06/8c/ed/068ced34c7a9cae1ba26ea1ffc78a6b6.jpg"
+        />
+      </div>
     </div>
 
-    {% for card_data in card_datas %}
-    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden flex relative mb-4 {% if not card_data['public'] %}border-4 border-blue-300{% endif %}">
-        <a href="/challenge/{{ card_data['id'] }}" class="absolute inset-0 z-10"></a> 
-        <div class="p-4 flex items-center justify-center flex-shrink-0">
-            <div class="w-48 h-48 bg-gray-200 rounded-md flex items-center justify-center overflow-hidden">
-                <img class="w-full h-full object-cover rounded-md"
-                    src="https://media.istockphoto.com/id/1317323736/ko/%EC%82%AC%EC%A7%84/%EB%82%98%EB%AC%B4-%EB%B0%A9%ED%96%A5%EC%9C%BC%EB%A1%9C-%ED%95%98%EB%8A%98%EB%A1%9C-%EB%B0%94%EB%9D%BC%EB%B3%B4%EB%8A%94-%EA%B2%BD%EC%B9%98.jpg?s=612x612&w=0&k=20&c=0xTghmMTXJ5ITCZ-LKTABbaPIK_1kWNf0FSFl_GL_7I="
-                    alt="Card Image">
-            </div>
-        </div>
-
-        <div class="flex-1 py-6 pr-6 pl-6 flex flex-col justify-center">
-            <div class="mb-4">
-                <h3 class="text-xl font-semibold text-gray-800">
-                    {{ card_data["title"] }}
-                </h3>
-            </div>
-        </div>
-
-        <div class="p-6 flex flex-col justify-between items-end flex-shrink-0">
-            <button class="relative z-20 text-gray-500 hover:text-red-500 transition-colors duration-200 focus:outline-none">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd"
-                        d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                        clip-rule="evenodd" />
-                </svg>
-            </button>
-
-            <div class="text-sm text-gray-600 mt-2 text-right">
-                <span class="font-medium">시작한 지 {{ card_data["days_from_start"] }} 일 째</span><br>
-                <span class="font-medium">도전 종료까지 {{ card_data["days_until_end"] }} 일 남았습니다.</span> 
-            </div>
-        </div>
+    <div class="flex-1 py-6 pr-6 pl-6 flex flex-col justify-center">
+      <div class="mb-4">
+        <h3 class="text-xl font-semibold text-gray-800">{{ card_data["title"] }}</h3>
+      </div>
     </div>
-    {% endfor %}
+
+    <div class="p-6 flex flex-col justify-between items-end flex-shrink-0">
+      <button
+        class="relative z-20 text-gray-500 hover:text-red-500 transition-colors duration-200 focus:outline-none"
+      >
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+          <path
+            fill-rule="evenodd"
+            d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+
+      <div class="text-sm text-gray-600 mt-2 text-right">
+        <span class="font-medium">시작한 지 {{ card_data["days_from_start"] }} 일 째</span><br />
+        <span class="font-medium"
+          >도전 종료까지 {{ card_data["days_until_end"] }} 일 남았습니다.</span
+        >
+      </div>
+    </div>
+  </div>
+  {% endfor %}
 </div>
-{% endblock %}
-
-{% block page_js %}
+{% endblock %} {% block page_js %}
 <script>
-    function goto_mainmodal() {
-        window.location.href='/main_modal';
-    }
+  function goto_mainmodal() {
+    window.location.href = '/main_modal';
+  }
 </script>
-{% endblock %}
-
-{% block add_ready_js %}
-$('#main_modal_btn').on('click', goto_mainmodal);
-{% endblock %}
+{% endblock %} {% block add_ready_js %} $('#main_modal_btn').on('click', goto_mainmodal); {%
+endblock %}
