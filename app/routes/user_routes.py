@@ -29,6 +29,7 @@ def log_in():
     password = request.form["password_give"]
 
     success, token, message = log_in_user(email, password)
+
     # jwt 토큰
     if not success:
         return jsonify({"success": False, "data": {}, "message": message})
@@ -42,9 +43,10 @@ def log_in():
             }
         )
     )
-    response.set_cookie("access_token", token, httponly=True)
+    response.set_cookie("access_token", token, httponly=False)
 
     return response
+
 
 @user_bp.route("/logout")
 def logout():
